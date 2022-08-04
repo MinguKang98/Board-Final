@@ -31,6 +31,8 @@ public interface BoardRepository {
 
     void updateVisitCount(int boardSeq);
 
-    void updateCommentCount(int boardSeq);
+    void increaseCommentCount(int boardSeq);
+
+    void decreaseCommentCount(int boardSeq);
 
 }

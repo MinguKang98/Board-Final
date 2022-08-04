@@ -128,9 +128,15 @@
         WHERE board_seq = #{boardSeq}
     </update>
 
-    <update id="updateCommentCount" parameterType="int">
+    <update id="increaseCommentCount" parameterType="int">
         UPDATE boards
         SET comment_count = comment_count + 1
+        WHERE board_seq = #{boardId}
+    </update>
+
+    <update id="decreaseCommentCount" parameterType="int">
+        UPDATE boards
+        SET comment_count = comment_count - 1
         WHERE board_seq = #{boardId}
     </update>
 
