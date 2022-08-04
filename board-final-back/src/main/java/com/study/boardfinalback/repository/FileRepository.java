@@ -12,9 +12,9 @@ import java.util.Optional;
 @Repository
 public interface FileRepository {
 
-    List<File> getFileListByBoardSeq(int BoardSeq);
+    List<File> getFileListByBoardSeq(int boardSeq);
 
-    Optional<File> getFileBySeq(int FileSeq);
+    Optional<File> getFileBySeq(int fileSeq);
 
     void addFile(File comment);
 

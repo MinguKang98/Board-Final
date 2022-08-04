@@ -11,9 +11,9 @@ import java.util.Optional;
 @Repository
 public interface CommentRepository {
 
-    List<Comment> getCommentListByBoardSeq(int BoardSeq);
+    List<Comment> getCommentListByBoardSeq(int boardSeq);
 
-    Optional<Comment> getCommentBySeq(int CommentSeq);
+    Optional<Comment> getCommentBySeq(int commentSeq);
 
     void addComment(Comment comment);
 
