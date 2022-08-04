@@ -16,8 +16,8 @@ public interface FileRepository {
 
     Optional<File> getFileBySeq(int fileSeq);
 
-    void addFile(File comment);
+    void addFile(File file);
 
-    void deleteFile(int commentSeq);
+    void deleteFile(int fileSeq);
 
 }
