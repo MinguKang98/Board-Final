@@ -46,4 +46,25 @@ public class Board {
         this.categorySeq = categorySeq;
     }
 
+    public Board updateBoard(String inputTitle,
+                             String inputContent,
+                             Boolean inputFileExist) {
+
+        String originTitle = this.getTitle();
+        String originContent = this.getContent();
+        Boolean originFileExist = this.getFileExist();
+
+        if (!originTitle.equals(inputTitle)) {
+            this.title = inputTitle;
+        }
+        if (!originContent.equals(inputContent)) {
+            this.content = inputContent;
+        }
+        if (originFileExist != inputFileExist) {
+            this.fileExist = inputFileExist;
+        }
+
+        return this;
+    }
+
 }

@@ -36,4 +36,8 @@ public class File {
         this.boardSeq = boardSeq;
     }
 
+    public void setBoardSeq(int boardSeq) {
+        this.boardSeq = boardSeq;
+    }
+
 }
