@@ -23,6 +23,7 @@ public class Board {
     int visitCount;
     int commentCount;
     Boolean fileExist;
+    BoardType boardType;
     int userSeq;
     int categorySeq;
 
@@ -33,6 +34,7 @@ public class Board {
                  int visitCount,
                  int commentCount,
                  Boolean fileExist,
+                 BoardType boardType,
                  int userSeq,
                  int categorySeq) {
 
@@ -42,29 +44,21 @@ public class Board {
         this.visitCount = visitCount;
         this.commentCount = commentCount;
         this.fileExist = fileExist;
+        this.boardType = boardType;
         this.userSeq = userSeq;
         this.categorySeq = categorySeq;
     }
 
-    public Board updateBoard(String inputTitle,
-                             String inputContent,
-                             Boolean inputFileExist) {
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-        String originTitle = this.getTitle();
-        String originContent = this.getContent();
-        Boolean originFileExist = this.getFileExist();
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-        if (!originTitle.equals(inputTitle)) {
-            this.title = inputTitle;
-        }
-        if (!originContent.equals(inputContent)) {
-            this.content = inputContent;
-        }
-        if (originFileExist != inputFileExist) {
-            this.fileExist = inputFileExist;
-        }
-
-        return this;
+    public void setFileExist(Boolean fileExist) {
+        this.fileExist = fileExist;
     }
 
 }
