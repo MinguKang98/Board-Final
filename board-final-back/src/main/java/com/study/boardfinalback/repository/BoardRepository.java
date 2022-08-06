@@ -15,11 +15,21 @@ public interface BoardRepository {
 
     List<Board> getBoardList();
 
-    List<Board> getBoardListByCategorySeq(int categorySeq);
+    int getTotalFreeBoardCountBySearchCriteria(SearchCriteria searchCriteria);
 
-    int getTotalBoardCountBySearchCriteria(SearchCriteria searchCriteria);
+    List<Board> getFreeBoardListBySearchPagingCriteria(SearchPagingCriteria searchPagingCriteria);
 
-    List<Board> getBoardListBySearchPagingCriteria(SearchPagingCriteria searchPagingCriteria);
+    int getTotalNotifyBoardCountBySearchCriteria(SearchCriteria searchCriteria);
+
+    List<Board> getNotifyBoardListBySearchPagingCriteria(SearchPagingCriteria searchPagingCriteria);
+
+    int getTotalMemberBoardCountBySearchCriteria(SearchCriteria searchCriteria);
+
+    List<Board> getMemberBoardListBySearchPagingCriteria(SearchPagingCriteria searchPagingCriteria);
+
+    int getTotalNewsBoardCountBySearchCriteria(SearchCriteria searchCriteria);
+
+    List<Board> getNewsBoardListBySearchPagingCriteria(SearchPagingCriteria searchPagingCriteria);
 
     Optional<Board> getBoardBySeq(int boardSeq);
 
