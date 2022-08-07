@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- users table 쿼리 매퍼 -->
 <mapper namespace="com.study.boardfinalback.repository.UserRepository">
 
+    <!--모든 row return-->
     <select id="getUserList" resultType="User">
         SELECT *
         FROM users
     </select>
 
+    <!--입력받은 userSeq 가지는 row return-->
     <select id="getUserBySeq" parameterType="int" resultType="User">
         SELECT *
         FROM users
         WHERE user_seq = #{userSeq}
     </select>
 
+    <!--입력받은 id 가지는 row return-->
+    <select id="getUserById" parameterType="String" resultType="User">
+        SELECT *
+        FROM users
+        WHERE id = #{id}
+    </select>
+
+    <!--입력받은 User insert-->
     <insert id="addUser" parameterType="User" useGeneratedKeys="true" keyProperty="userSeq">
         INSERT INTO users
         (
@@ -37,18 +48,21 @@
         )
     </insert>
 
+    <!--입력받은 User의 password update-->
     <update id="updatePassword" parameterType="User">
         UPDATE users
         SET password = #{password}
         WHERE user_seq = #{userSeq}
     </update>
 
+    <!--입력받은 userSeq 가지는 row delete-->
     <delete id="deleteUser" parameterType="int">
         DELETE
         FROM users
         WHERE user_seq = #{userSeq}
     </delete>
 
+    <!--입력받은 userSeq 가지는 row 차단-->
     <update id="banUser" parameterType="int">
         UPDATE users
         SET status = "BANNED"
