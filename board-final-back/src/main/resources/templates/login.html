@@ -14,11 +14,12 @@
     <form th:action="@{/loginUser}" method="post" th:object="${form}">
         <div class="mb-3">
             <label for="id" class="form-label">아이디</label>
-            <input type="text" class="form-control" id="id" th:field="*{id}">
+            <input type="text" class="form-control" id="id" th:field="*{id}" placeholder="아이디" required>
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">비밀번호</label>
-            <input type="password" class="form-control" id="password" th:field="*{password}">
+            <input type="password" class="form-control" id="password"
+                   th:field="*{password}" placeholder="비밀번호" required>
         </div>
         <div class="mb-3">
             <span id="loginError"></span>

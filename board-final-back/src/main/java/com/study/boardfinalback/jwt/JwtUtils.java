@@ -29,6 +29,7 @@ public class JwtUtils {
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + Duration.ofMinutes(30).toMillis()))
+                .claim("userSeq", user.getUserSeq())
                 .claim("id", user.getId())
                 .claim("role", user.getRole())
                 .signWith(SignatureAlgorithm.HS256, "secret")
