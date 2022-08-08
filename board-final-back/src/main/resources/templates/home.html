@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Home</h1>
+    <form th:action="@{/logout}" method="post" th:if="${authenticated}">
+        <button type="submit">logout</button>
+    </form>
+    <button th:if="${!authenticated}" type="button" onclick="location.href='/login'">login</button>
+    <button th:if="${!authenticated}"type="button" onclick="location.href='/register'">register</button>
+
+    <h1 th:if="${authenticated}" th:text="${id}"></h1>
+    <h1 th:if="${authenticated}" th:text="${role}"></h1>
+</body>
+</html>
