@@ -37,6 +37,14 @@ public interface UserRepository {
      */
     Optional<User> getUserById(String id);
 
+    /**
+     * 입력받은 email 가지는 Optional<User> return
+     *
+     * @param email : return할 User의 email
+     * @return : 해당 id 가지는 Optional<User> 인스턴스
+     */
+    Optional<User> getUserByEmail(String email);
+
 
     /**
      * 입력받은 User 추가

@@ -89,7 +89,7 @@ public class UserService {
     }
 
     /**
-     * 입력받은 id를 가지는 User가 있는지 확인하여 id 중복 체크를 한다.
+     * 입력받은 id를 가지는 User가 있는지 확인하는 id 중복 체크를 한다.
      *
      * @param id : 중복 체크할 id
      * @return : 사용이 가능한 id면 true, 사용 불가능한 id면 false
@@ -97,6 +97,21 @@ public class UserService {
     public boolean identifyCheck(String id) {
 
         Optional<User> user = userRepository.getUserById(id);
+        if (user.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 입력받은 email를 가지는 User가 있는지 확인하는 email 중복 체크를 한다.
+     *
+     * @param email : 중복 체크할 email
+     * @return : 사용이 가능한 email이면 true, 사용 불가능한 email이면 false
+     */
+    public boolean emailCheck(String email) {
+
+        Optional<User> user = userRepository.getUserByEmail(email);
         if (user.isEmpty()) {
             return true;
         }

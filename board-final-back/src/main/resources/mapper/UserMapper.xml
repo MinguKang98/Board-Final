@@ -24,6 +24,13 @@
         WHERE id = #{id}
     </select>
 
+    <!--입력받은 email 가지는 row return-->
+    <select id="getUserByEmail" parameterType="String" resultType="User">
+        SELECT *
+        FROM users
+        WHERE email = #{email}
+    </select>
+
     <!--입력받은 User insert-->
     <insert id="addUser" parameterType="User" useGeneratedKeys="true" keyProperty="userSeq">
         INSERT INTO users
