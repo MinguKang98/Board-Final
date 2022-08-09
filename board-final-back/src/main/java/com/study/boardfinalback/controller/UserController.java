@@ -79,7 +79,7 @@ public class UserController {
         }
 
         model.addAttribute("form", new LoginDto());
-        return "login";
+        return "/users/login";
     }
 
     /**
@@ -139,7 +139,7 @@ public class UserController {
         }
 
         model.addAttribute("form", new RegisterDto());
-        return "register";
+        return "/users/register";
     }
 
     /**
@@ -242,7 +242,7 @@ public class UserController {
         User user = userService.getUserBySeq(userSeq);
         model.addAttribute("user", user);
 
-        return "userDetail";
+        return "/users/userDetail";
     }
 
     /**
@@ -261,7 +261,7 @@ public class UserController {
 
         model.addAttribute("form", new PasswordChangeDto());
 
-        return "passwordChange";
+        return "/users/passwordChange";
     }
 
     /**
@@ -327,7 +327,7 @@ public class UserController {
             return "redirect:/login";
         }
 
-        return "userDelete";
+        return "/users/userDelete";
     }
 
     @PostMapping("/userDelete")
