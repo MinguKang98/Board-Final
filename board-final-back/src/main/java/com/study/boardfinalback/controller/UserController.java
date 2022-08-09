@@ -227,7 +227,14 @@ public class UserController {
         return "redirect:/login";
     }
 
-    //TODO 유저 정보
+    @GetMapping("/users/{userSeq}")
+    public String userDetailPage(@PathVariable("userSeq") int userSeq, Model model) {
+
+        User user = userService.getUserBySeq(userSeq);
+        model.addAttribute("user", user);
+
+        return "userDetail";
+    }
 
     //TODO 비밀번호 수정
 
