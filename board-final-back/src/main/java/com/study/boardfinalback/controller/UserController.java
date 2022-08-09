@@ -5,7 +5,9 @@ import com.study.boardfinalback.domain.user.UserRole;
 import com.study.boardfinalback.domain.user.UserStatus;
 import com.study.boardfinalback.dto.LoginDto;
 import com.study.boardfinalback.dto.RegisterDto;
-import com.study.boardfinalback.jwt.JwtUtils;
+import com.study.boardfinalback.dto.PasswordChangeDto;
+import com.study.boardfinalback.utils.EncryptUtils;
+import com.study.boardfinalback.utils.JwtUtils;
 import com.study.boardfinalback.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -89,7 +91,7 @@ public class UserController {
      */
     @PostMapping("/loginUser")
     public String loginUser(LoginDto loginDto, HttpServletResponse response) {
-        Optional<User> loginUser = userService.login(loginDto.getId(), loginDto.getPassword());
+        Optional<User> loginUser = userService.login(loginDto.getId(), EncryptUtils.encryptPassword(loginDto.getPassword()));
         if (loginUser.isEmpty()) {
             log.info("There is no User with id={} password={}", loginDto.getId(), loginDto.getPassword());
             return "redirect:/login?error=1";
@@ -216,7 +218,7 @@ public class UserController {
                 .name(registerDto.getName())
                 .id(registerDto.getId())
                 .email(registerDto.getEmail())
-                .password(registerDto.getPassword())
+                .password(EncryptUtils.encryptPassword(registerDto.getPassword()))
                 .role(UserRole.ROLE_MEMBER)
                 .status(UserStatus.ALLOWED)
                 .build();
@@ -227,6 +229,13 @@ public class UserController {
         return "redirect:/login";
     }
 
+    /**
+     * call user detail page
+     *
+     * @param userSeq : User의 userSeq
+     * @param model
+     * @return : userDetail.html
+     */
     @GetMapping("/users/{userSeq}")
     public String userDetailPage(@PathVariable("userSeq") int userSeq, Model model) {
 
@@ -236,7 +245,79 @@ public class UserController {
         return "userDetail";
     }
 
-    //TODO 비밀번호 수정
+    /**
+     * call password change page
+     *
+     * @param model
+     * @return : 로그인 되었있다면 passwordChange.html, 되어있지 않다면 redirect:/login
+     */
+    @GetMapping("/user/passwordChange")
+    public String passwordChangePage(Model model) {
+
+        boolean isAuthenticated = (boolean) model.getAttribute("authenticated");
+        if (isAuthenticated == false) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("form", new PasswordChangeDto());
+
+        return "passwordChange";
+    }
+
+    /**
+     * 유효성 감사를 통과한 passwordChangeDto를 사용해 비밀번호 변경 후, redirect:/users/{userSeq}, 통과하지 못하면 redirect:/user/passwordChange
+     *
+     * @param model
+     * @param passwordChangeDto : passwordChange에 필요한 필드 포함한 DTO
+     * @param bindingResult
+     * @return : 유효성 검사 통과 시 redirect:/users/{userSeq}, 통과하지 못하면 redirect:/user/passwordChange
+     */
+    @PostMapping("/passwordChange")
+    public String passwordChange(Model model, @Valid PasswordChangeDto passwordChangeDto, BindingResult bindingResult) {
+
+        //TODO valid custom
+
+        if (bindingResult.hasErrors()) {
+            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+            for (FieldError fieldError : fieldErrors) {
+                log.info("비밀번호 변경 형식 에러 : {}", fieldError.getDefaultMessage());
+            }
+            return "redirect:/user/passwordChange";
+        }
+
+        if (passwordChangeDto.getOriginPassword().equals(passwordChangeDto.getNewPassword())) {
+            log.info("비밀번호 변경 형식 에러 : 새 비밀번호가 기존 비밀번호와 일치합니다.");
+            return "redirect:/user/passwordChange";
+        }
+
+        if (!passwordChangeDto.getNewPassword().equals(passwordChangeDto.getNewPasswordCheck())) {
+            log.info("비밀번호 변경 형식 에러 : 새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.");
+            return "redirect:/user/passwordChange";
+        }
+
+        int userSeq = Integer.parseInt(model.getAttribute("userSeq").toString());
+        User user = userService.getUserBySeq(userSeq);
+
+        if (!user.getPassword().equals(
+                EncryptUtils.encryptPassword(passwordChangeDto.getOriginPassword()
+            ))) {
+            log.info("비밀번호 변경 형식 에러 : 기존 비밀번호가 일치하지 않습니다.");
+            return "redirect:/user/passwordChange";
+        }
+
+        User newUser = User.builder()
+                .userSeq(userSeq)
+                .password(
+                        EncryptUtils.encryptPassword(passwordChangeDto.getNewPassword())
+                )
+                .build();
+
+
+       userService.updateUserPassword(newUser);
+        log.info("비밀번호가 변경되었습니다. user={}", user.getId());
+
+        return String.format("redirect:/users/%d", userSeq);
+    }
 
     //TODO 회원 탈퇴
 
