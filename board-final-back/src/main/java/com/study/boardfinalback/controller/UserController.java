@@ -55,17 +55,6 @@ public class UserController {
     }
 
     /**
-     * call home page
-     *
-     * @param model
-     * @return : home.html
-     */
-    @GetMapping("/")
-    public String home(Model model) {
-        return "home";
-    }
-
-    /**
      * call login page
      *
      * @param model
@@ -319,6 +308,12 @@ public class UserController {
         return String.format("redirect:/users/%d", userSeq);
     }
 
+    /**
+     * call user delete page
+     *
+     * @param model
+     * @return : 로그인 되어있으면 users/userDelete.html, 안 되어있으면 redirect:/login
+     */
     @GetMapping("/user/delete")
     public String userDeletePage(Model model) {
 
@@ -330,6 +325,13 @@ public class UserController {
         return "/users/userDelete";
     }
 
+    /**
+     * 로그인 되어있는 User 삭제 후 redirect:/
+     *
+     * @param model
+     * @param response
+     * @return : redirect:/
+     */
     @PostMapping("/userDelete")
     public String userDelete(Model model, HttpServletResponse response) {
 
