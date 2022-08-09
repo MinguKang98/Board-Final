@@ -319,6 +319,31 @@ public class UserController {
         return String.format("redirect:/users/%d", userSeq);
     }
 
-    //TODO 회원 탈퇴
+    @GetMapping("/user/delete")
+    public String userDeletePage(Model model) {
+
+        boolean isAuthenticated = (boolean) model.getAttribute("authenticated");
+        if (isAuthenticated == false) {
+            return "redirect:/login";
+        }
+
+        return "userDelete";
+    }
+
+    @PostMapping("/userDelete")
+    public String userDelete(Model model, HttpServletResponse response) {
+
+        int userSeq = Integer.parseInt(model.getAttribute("userSeq").toString());
+        userService.deleteUser(userSeq);
+        log.info("유저가 삭제되었습니다 - userSeq:{}", userSeq);
+
+        Cookie cookie = new Cookie("AUTH-TOKEN", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return "redirect:/";
+    }
+
+    // TODO 차단
 
 }
