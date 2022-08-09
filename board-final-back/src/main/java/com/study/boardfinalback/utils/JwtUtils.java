@@ -1,13 +1,11 @@
-package com.study.boardfinalback.jwt;
+package com.study.boardfinalback.utils;
 
 import com.study.boardfinalback.domain.user.User;
-import com.study.boardfinalback.domain.user.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Date;
 
