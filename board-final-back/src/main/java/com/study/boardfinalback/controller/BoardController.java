@@ -4,6 +4,7 @@ import com.study.boardfinalback.domain.*;
 import com.study.boardfinalback.domain.criteria.PagingCriteria;
 import com.study.boardfinalback.domain.criteria.SearchCriteria;
 import com.study.boardfinalback.domain.user.User;
+import com.study.boardfinalback.domain.user.UserRole;
 import com.study.boardfinalback.dto.boards.BoardWriteDto;
 import com.study.boardfinalback.dto.files.FileDto;
 import com.study.boardfinalback.service.*;
@@ -64,7 +65,7 @@ public class BoardController {
     /**
      * call notify board page
      *
-     * @param searchCriteria  : 검색 기준
+     * @param searchCriteria : 검색 기준
      * @param model
      * @return : /boards/notifyBoard.html
      */
@@ -93,7 +94,7 @@ public class BoardController {
     /**
      * call free board page
      *
-     * @param searchCriteria  : 검색 기준
+     * @param searchCriteria : 검색 기준
      * @param model
      * @return : /boards/freeBoard.html
      */
@@ -125,7 +126,7 @@ public class BoardController {
     /**
      * call member board page
      *
-     * @param searchCriteria  : 검색 기준
+     * @param searchCriteria : 검색 기준
      * @param model
      * @return : /boards/memberBoard.html
      */
@@ -157,7 +158,7 @@ public class BoardController {
     /**
      * call news board page
      *
-     * @param searchCriteria  : 검색 기준
+     * @param searchCriteria : 검색 기준
      * @param model
      * @return : /boards/newsBoard.html
      */
@@ -186,7 +187,7 @@ public class BoardController {
     /**
      * call board detail page
      *
-     * @param type : 게시글의 종류
+     * @param type     : 게시글의 종류
      * @param boardSeq : 게시글의 boardSeq
      * @param model
      * @return : /boards/boardDetail.html
@@ -232,7 +233,7 @@ public class BoardController {
     /**
      * call board write page
      *
-     * @param type : 작성할 게시글 type
+     * @param type  : 작성할 게시글 type
      * @param model
      * @return : 로그인 안되어 있으면 redirect:/board/{type}, 지정된 type이 아닌 경우는 redirect:/,
      * notify, news에 ROLE_MEMBER 유저가 접근 시 redirect:/, 나머지 경우는 /boards/boardWrite.html
@@ -275,8 +276,8 @@ public class BoardController {
      * 유효성 검사를 통과한 boardWriteDto와 fileDto를 사용해 Board 생성 후 생성된 board page로 이동한다.
      * 유효성 검사를 통과하지 못한 경우는 redirect:/board/{type}/write
      *
-     * @param type : 게시글 종류
-     * @param fileDto : 업로드할 파일들이 담긴 DTO
+     * @param type          : 게시글 종류
+     * @param fileDto       : 업로드할 파일들이 담긴 DTO
      * @param boardWriteDto : 업로드할 게시글의 필드들이 담긴 DTO
      * @param bindingResult
      * @return : 유효성 검사를 통과하지 못한 경우 redirect:/board/{type}/write,
@@ -316,6 +317,61 @@ public class BoardController {
 
     // TODO 게시글 수정
 
-    // TODO 게시글 삭제
+    /**
+     *
+     * @param type : 게시글 종류
+     * @param boardSeq : 삭제할 게시글의 boardSeq
+     * @param searchCriteria : 검색 기준
+     * @param model
+     * @return : 로그인 되어있지 않으면 redirect:/login, 지정된 type이 아니면 redirect:/,
+     * 삭제 권한이 없는 접근이면 redirect:/board/{type}/{boardSeq}, 삭제 권한이 있는 접근이면 /boards/boardDelete.html
+     */
+    @GetMapping("/board/{type}/{boardSeq}/delete")
+    public String boardDelete(@PathVariable("type") String type,
+                              @PathVariable("boardSeq") int boardSeq,
+                              SearchCriteria searchCriteria,
+                              Model model) {
+
+        boolean isAuthenticated = (boolean) model.getAttribute("authenticated");
+        if (isAuthenticated == false) {
+            return String.format("redirect:/login");
+        }
+
+        if (boardTypeMap.get(type) == null) {
+            return "redirect:/";
+        }
+
+        String role = model.getAttribute("role").toString();
+        int userSeq = Integer.parseInt(model.getAttribute("userSeq").toString());
+        Board board = boardService.getBoardBySeq(boardSeq);
+
+
+        if ((UserRole.ROLE_MEMBER.toString().equals(role)) && userSeq != board.getUserSeq()) {
+            return String.format("redirect:/board/%s/%d", type, boardSeq);
+        }
+
+        model.addAttribute("type", type);
+        model.addAttribute("boardSeq", boardSeq);
+        model.addAttribute("searchCriteria", searchCriteria);
+
+        return "/boards/boardDelete";
+    }
+
+    /**
+     * 게시글 삭제 후 게시판으로 이동
+     *
+     * @param type : 게시글 종류
+     * @param boardSeq : 삭제할 Board의 boardSeq
+     * @return : redirect:/board/{type}
+     */
+    @PostMapping("/boardDelete")
+    public String delete(@RequestParam("type") String type,
+                         @RequestParam("boardSeq") int boardSeq) {
+
+        boardService.deleteBoard(boardSeq);
+        log.info("게시글이 삭제되었습니다. boardSeq={}", boardSeq);
+
+        return String.format("redirect:/board/%s", type);
+    }
 
 }

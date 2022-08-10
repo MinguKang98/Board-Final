@@ -38,7 +38,8 @@
 
     <div th:if="${userSeq == board.getUserSeq() || role == 'ROLE_ADMIN'}">
         <button type="button" th:onclick="|location.href='@{/board/{type}/{boardSeq}/modify(type=${type},boardSeq=${board.getBoardSeq()})}'|">수정</button>
-        <button type="button" th:onclick="|location.href='@{/board/{type}/{boardSeq}/delete(type=${type},boardSeq=${board.getBoardSeq()})}'|">삭제</button>
+        <button th:if="${type == 'notify' || type == 'news'}" type="button" th:onclick="|location.href='@{/board/{type}/{boardSeq}/delete(type=${type},boardSeq=${boardSeq},curPage=${searchCriteria.getCurPage()},dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},text=${searchCriteria.getText()})}'|">삭제</button>
+        <button th:unless="${type == 'notify' || type == 'news'}" type="button" th:onclick="|location.href='@{/board/{type}/{boardSeq}/delete(type=${type},boardSeq=${boardSeq},curPage=${searchCriteria.getCurPage()},dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, categorySeq=${searchCriteria.getCategorySeq}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},text=${searchCriteria.getText()})}'|">삭제</button>
     </div>
 
     <div th:if="${type == 'notify' || type == 'news'}">
