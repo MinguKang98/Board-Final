@@ -16,19 +16,19 @@ public class FileService {
 
     private final FileRepository fileRepository;
 
-    List<File> getFileListByBoardSeq(int boardSeq) {
+    public List<File> getFileListByBoardSeq(int boardSeq) {
 
         return fileRepository.getFileListByBoardSeq(boardSeq);
     }
 
-    File getFileBySeq(int fileSeq) {
+    public File getFileBySeq(int fileSeq) {
 
         return fileRepository.getFileBySeq(fileSeq)
                 .orElseThrow(FileNotFoundException::new);
     }
 
     @Transactional
-    int addFile(File file) {
+    public int addFile(File file) {
 
         fileRepository.addFile(file);
 
@@ -36,7 +36,7 @@ public class FileService {
     }
 
     @Transactional
-    void deleteFile(int fileSeq) {
+    public void deleteFile(int fileSeq) {
 
         fileRepository.deleteFile(fileSeq);
     }
