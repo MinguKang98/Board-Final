@@ -4,6 +4,8 @@ import com.study.boardfinalback.domain.Board;
 import com.study.boardfinalback.domain.Category;
 import com.study.boardfinalback.domain.Comment;
 import com.study.boardfinalback.domain.File;
+import com.study.boardfinalback.domain.criteria.PagingCriteria;
+import com.study.boardfinalback.domain.criteria.SearchCriteria;
 import com.study.boardfinalback.domain.user.User;
 import com.study.boardfinalback.service.*;
 import com.study.boardfinalback.utils.JwtUtils;
@@ -48,7 +50,34 @@ public class BoardController {
         }
     }
 
-    // TODO 공지 게시판
+    /**
+     * call notify board page
+     *
+     * @param searchCriteria  : 검색 기준
+     * @param model
+     * @return : /boards/notifyBoard.html
+     */
+    @GetMapping("/board/notify")
+    public String notifyBoard(SearchCriteria searchCriteria, Model model) {
+
+        int totalBoardCount = boardService.getTotalNotifyBoardCountBySearchCriteria(searchCriteria);
+        PagingCriteria pagingCriteria = PagingCriteria.builder()
+                .curPage(
+                        (searchCriteria.getCurPage() == null) ? 1 : searchCriteria.getCurPage()
+                )
+                .totalBoardCount(totalBoardCount)
+                .build();
+
+        //TODO user join
+        List<Board> boardList = boardService.getNotifyBoardListBySearchPagingCriteria(searchCriteria, pagingCriteria);
+
+        model.addAttribute("searchCriteria", searchCriteria);
+        model.addAttribute("pagingCriteria", pagingCriteria);
+        model.addAttribute("totalBoardCount", totalBoardCount);
+        model.addAttribute("boardList", boardList);
+
+        return "/boards/notifyBoard";
+    }
 
     // TODO 자유 게시판
 
@@ -67,6 +96,7 @@ public class BoardController {
     @GetMapping("/board/{type}/{boardSeq}")
     public String boardDetail(@PathVariable("type") String type,
                               @PathVariable("boardSeq") int boardSeq,
+                              SearchCriteria searchCriteria,
                               Model model) {
 
         boardService.updateVisitCount(boardSeq);
@@ -87,6 +117,7 @@ public class BoardController {
         model.addAttribute("board", board);
         model.addAttribute("commentList", commentList);
         model.addAttribute("fileList", fileList);
+        model.addAttribute("searchCriteria", searchCriteria);
 
         return "/boards/boardDetail";
     }
