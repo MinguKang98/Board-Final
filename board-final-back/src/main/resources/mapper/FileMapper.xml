@@ -16,13 +16,13 @@
     </select>
 
     <insert id="addFile" parameterType="File" useGeneratedKeys="true" keyProperty="fileSeq">
-        INSERT INTO file
+        INSERT INTO files
         (
             date_created,
             origin_name,
             system_name,
             extension,
-            board_seq,
+            board_seq
         )
         VALUES
         (
