@@ -90,11 +90,98 @@ public class BoardController {
         return "/boards/notifyBoard";
     }
 
-    // TODO 자유 게시판
+    /**
+     * call free board page
+     *
+     * @param searchCriteria  : 검색 기준
+     * @param model
+     * @return : /boards/freeBoard.html
+     */
+    @GetMapping("/board/free")
+    public String freeBoard(SearchCriteria searchCriteria, Model model) {
 
-    // TODO 회원 게시판
+        int totalBoardCount = boardService.getTotalFreeBoardCountBySearchCriteria(searchCriteria);
+        PagingCriteria pagingCriteria = PagingCriteria.builder()
+                .curPage(
+                        (searchCriteria.getCurPage() == null) ? 1 : searchCriteria.getCurPage()
+                )
+                .totalBoardCount(totalBoardCount)
+                .build();
 
-    // TODO 뉴스 게시판
+        //TODO user join
+        List<Board> boardList = boardService.getFreeBoardListBySearchPagingCriteria(searchCriteria, pagingCriteria);
+        List<Category> categoryList = categoryService.getCategoryList();
+        categoryList.remove(0);
+
+        model.addAttribute("searchCriteria", searchCriteria);
+        model.addAttribute("pagingCriteria", pagingCriteria);
+        model.addAttribute("totalBoardCount", totalBoardCount);
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("categoryList", categoryList);
+
+        return "/boards/freeBoard";
+    }
+
+    /**
+     * call member board page
+     *
+     * @param searchCriteria  : 검색 기준
+     * @param model
+     * @return : /boards/memberBoard.html
+     */
+    @GetMapping("/board/member")
+    public String memberBoard(SearchCriteria searchCriteria, Model model) {
+
+        int totalBoardCount = boardService.getTotalMemberBoardCountBySearchCriteria(searchCriteria);
+        PagingCriteria pagingCriteria = PagingCriteria.builder()
+                .curPage(
+                        (searchCriteria.getCurPage() == null) ? 1 : searchCriteria.getCurPage()
+                )
+                .totalBoardCount(totalBoardCount)
+                .build();
+
+        //TODO user join
+        List<Board> boardList = boardService.getMemberBoardListBySearchPagingCriteria(searchCriteria, pagingCriteria);
+        List<Category> categoryList = categoryService.getCategoryList();
+        categoryList.remove(0);
+
+        model.addAttribute("searchCriteria", searchCriteria);
+        model.addAttribute("pagingCriteria", pagingCriteria);
+        model.addAttribute("totalBoardCount", totalBoardCount);
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("categoryList", categoryList);
+
+        return "/boards/memberBoard";
+    }
+
+    /**
+     * call news board page
+     *
+     * @param searchCriteria  : 검색 기준
+     * @param model
+     * @return : /boards/newsBoard.html
+     */
+    @GetMapping("/board/news")
+    public String newsBoard(SearchCriteria searchCriteria, Model model) {
+
+        int totalBoardCount = boardService.getTotalNewsBoardCountBySearchCriteria(searchCriteria);
+        PagingCriteria pagingCriteria = PagingCriteria.builder()
+                .curPage(
+                        (searchCriteria.getCurPage() == null) ? 1 : searchCriteria.getCurPage()
+                )
+                .totalBoardCount(totalBoardCount)
+                .build();
+
+        //TODO user join
+        List<Board> boardList = boardService.getNewsBoardListBySearchPagingCriteria(searchCriteria, pagingCriteria);
+
+        model.addAttribute("searchCriteria", searchCriteria);
+        model.addAttribute("pagingCriteria", pagingCriteria);
+        model.addAttribute("totalBoardCount", totalBoardCount);
+        model.addAttribute("boardList", boardList);
+
+        return "/boards/newsBoard";
+    }
 
     /**
      * call board detail page
@@ -109,6 +196,15 @@ public class BoardController {
                               @PathVariable("boardSeq") int boardSeq,
                               SearchCriteria searchCriteria,
                               Model model) {
+
+        if (boardTypeMap.get(type) == null) {
+            return "redirect:/";
+        }
+
+        boolean isAuthenticated = (boolean) model.getAttribute("authenticated");
+        if (type.equals("member") && isAuthenticated == false) {
+            return "redirect:/login";
+        }
 
         boardService.updateVisitCount(boardSeq);
 
@@ -147,16 +243,15 @@ public class BoardController {
                              Model model) {
 
         boolean isAuthenticated = (boolean) model.getAttribute("authenticated");
-        String role = model.getAttribute("role").toString();
-
         if (isAuthenticated == false) {
-            return String.format("redirect:/board/%s", type);
+            return String.format("redirect:/login", type);
         }
 
         if (boardTypeMap.get(type) == null) {
             return "redirect:/";
         }
 
+        String role = model.getAttribute("role").toString();
         if (type.equals("notify") || type.equals("news")) {
             if (role.equals("ROLE_MEMBER")) {
                 return "redirect:/";
@@ -180,9 +275,9 @@ public class BoardController {
      * 유효성 검사를 통과한 boardWriteDto와 fileDto를 사용해 Board 생성 후 생성된 board page로 이동한다.
      * 유효성 검사를 통과하지 못한 경우는 redirect:/board/{type}/write
      *
-     * @param type
-     * @param boardWriteDto
+     * @param type : 게시글 종류
      * @param fileDto : 업로드할 파일들이 담긴 DTO
+     * @param boardWriteDto : 업로드할 게시글의 필드들이 담긴 DTO
      * @param bindingResult
      * @return : 유효성 검사를 통과하지 못한 경우 redirect:/board/{type}/write,
      * 통과한 경우 redirect:/board/{type}/{boardSeq}. 이때 boardSeq은 현재 생성된 Board의 boardSeq
@@ -190,8 +285,8 @@ public class BoardController {
      */
     @PostMapping("/boardWrite/{type}")
     public String write(@PathVariable("type") String type,
-                        @Valid BoardWriteDto boardWriteDto,
                         FileDto fileDto,
+                        @Valid BoardWriteDto boardWriteDto,
                         BindingResult bindingResult) throws IOException {
 
         if (bindingResult.hasErrors()) {
@@ -199,10 +294,6 @@ public class BoardController {
             for (FieldError fieldError : fieldErrors) {
                 log.info("게시글 작성 형식 에러 : {}", fieldError.getDefaultMessage());
             }
-            return String.format("redirect:/board/%s/write", type);
-        }
-
-        if (boardWriteDto.getCategorySeq() == 0) {
             return String.format("redirect:/board/%s/write", type);
         }
 
@@ -218,6 +309,7 @@ public class BoardController {
         List<File> addFileList = fileUtils.getAddFileList(fileDto.getFiles());
 
         int boardSeq = boardService.addBoard(board, addFileList);
+        log.info("새로운 게시글이 등록되었습니다. boardSeq={}", boardSeq);
 
         return String.format("redirect:/board/%s/%d", type, boardSeq);
     }
@@ -225,9 +317,5 @@ public class BoardController {
     // TODO 게시글 수정
 
     // TODO 게시글 삭제
-
-
-
-
 
 }

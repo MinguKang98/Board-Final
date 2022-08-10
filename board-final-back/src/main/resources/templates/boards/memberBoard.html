@@ -4,7 +4,7 @@
     <script src="https://kit.fontawesome.com/052e9eaead.js" crossorigin="anonymous"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>공지사항</title>
+    <title>회원전용 게시판</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 </head>
 <body>
@@ -12,12 +12,12 @@
 <nav class="navbar">
     <div class="container">
         <a class="navbar-brand" href="/">Home</a>
-        <a class="navbar-brand" href="/board/notify">공지사항</a>
+        <a class="navbar-brand" href="/board/member">회원전용 게시판</a>
     </div>
 </nav>
 
 <div class="container">
-    <form class="row" method="get" name="searchForm" id="searchForm" action="/board/notify">
+    <form class="row" method="get" name="searchForm" id="searchForm" action="/board/member">
         <div class="col-5">
             <div class="row">
                 <div class="col-2 align-middle">등록일</div>
@@ -29,6 +29,14 @@
                     <input class="form-control" type="date" name="dateCreatedTo" id="dateCreatedTo"/>
                 </div>
             </div>
+        </div>
+        <div class="col-2">
+            <select class="form-select" name="categorySeq" id="categorySeq">
+                <option value="0" selected>전체 카테고리</option>
+                <th:block th:each="category:${categoryList}">
+                    <option th:value="${category.getCategorySeq()}" th:text="${category.getName()}"></option>
+                </th:block>
+            </select>
         </div>
         <div class="col-4">
             <input class="form-control" type="text" name="text" id="text" placeholder="검색어를 입력해 주세요. (제목+작성자+내용)"/>
@@ -48,6 +56,7 @@
     <table class="table">
         <thead class="table-light">
         <tr>
+            <th>카테고리</th>
             <th></th>
             <th>제목</th>
             <th>작성자</th>
@@ -58,12 +67,13 @@
         </thead>
         <tbody>
         <tr th:each="board:${boardList}">
+            <td th:text="${categoryList.get(board.getCategorySeq() - 2).getName()}"></td>
             <td th:if="${board.getFileExist() == true}"><i class="fas fa-paperclip"></i></td>
             <td th:unless="${board.getFileExist() == true}"></td>
             <td>
-                <a th:href="@{/board/notify/{boardSeq}(boardSeq=${board.getBoardSeq()}, curPage=${pagingCriteria.getCurPage()},
+                <a th:href="@{/board/member/{boardSeq}(boardSeq=${board.getBoardSeq()}, curPage=${pagingCriteria.getCurPage()},
                     dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},
-                    text=${searchCriteria.getText()})}">
+                    categorySeq=${searchCriteria.getCategorySeq()}, text=${searchCriteria.getText()})}">
                     <span th:text="|${board.getTitle()} (${board.getCommentCount()})|"></span>
                 </a>
             </td>
@@ -80,15 +90,15 @@
     <nav>
         <ul class="pagination justify-content-center">
             <li class="page-item">
-                <a class="page-link" th:href="@{/board/notify(curPage=1, dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},
-                    text=${searchCriteria.getText()})}">
+                <a class="page-link" th:href="@{/board/member(curPage=1, dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},
+                    categorySeq=${searchCriteria.getCategorySeq()}, text=${searchCriteria.getText()})}">
                     <i class="fas fa-chevron-left"></i><i class="fas fa-chevron-left"></i>
                 </a>
             </li>
             <li class="page-item">
-                <a class="page-link" th:href="@{/board/notify(curPage=${(pagingCriteria.getCurPage() - 10 < 0) ? 1 : pagingCriteria.getCurPage() - 10},
+                <a class="page-link" th:href="@{/board/member(curPage=${(pagingCriteria.getCurPage() - 10 < 0) ? 1 : pagingCriteria.getCurPage() - 10},
                     dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},
-                    text=${searchCriteria.getText()})}">
+                    categorySeq=${searchCriteria.getCategorySeq()}, text=${searchCriteria.getText()})}">
                     <i class="fas fa-chevron-left"></i>
                 </a>
             </li>
@@ -97,32 +107,30 @@
                     <a th:text="${num}" class="page-link" href="#" ></a>
                 </li>
                 <li th:unless="${num} == ${pagingCriteria.getCurPage()}" class="page-item">
-                    <a th:text="${num}" class="page-link" th:href="@{/board/notify(curPage=${num}, dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},
-                       text=${searchCriteria.getText()})}"></a>
+                    <a th:text="${num}" class="page-link" th:href="@{/board/member(curPage=${num}, dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},
+                       categorySeq=${searchCriteria.getCategorySeq()}, text=${searchCriteria.getText()})}"></a>
                 </li>
             </th:block>
 
             <li class="page-item">
-                <a class="page-link" th:href="@{/board/notify(curPage=${(pagingCriteria.getCurPage() + 10 > pagingCriteria.getTotalPageCount()) ? pagingCriteria.getTotalPageCount() : pagingCriteria.getCurPage() + 10 },
+                <a class="page-link" th:href="@{/board/member(curPage=${(pagingCriteria.getCurPage() + 10 > pagingCriteria.getTotalPageCount()) ? pagingCriteria.getTotalPageCount() : pagingCriteria.getCurPage() + 10 },
                 dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},
-                   text=${searchCriteria.getText()})}">
+                   categorySeq=${searchCriteria.getCategorySeq()}, text=${searchCriteria.getText()})}">
                     <i class="fas fa-chevron-right"></i>
                 </a>
             </li>
             <li class="page-item">
-                <a class="page-link" th:href="@{/board/notify(curPage=${pagingCriteria.getTotalPageCount()}, dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},
-                   text=${searchCriteria.getText()})}">
+                <a class="page-link" th:href="@{/board/member(curPage=${pagingCriteria.getTotalPageCount()}, dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},
+                   categorySeq=${searchCriteria.getCategorySeq()}, text=${searchCriteria.getText()})}">
                     <i class="fas fa-chevron-right"></i><i class="fas fa-chevron-right"></i>
                 </a>
             </li>
         </ul>
     </nav>
 
-    <div th:if="${role == 'ROLE_ADMIN'}">
-        <button class="btn btn-primary btn-lg" style="float:right" type="button" th:onclick="|location.href='@{/board/notify/write(curPage=${searchCriteria.getCurPage()},dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},text=${searchCriteria.getText()})}'|">
-            등록
-        </button>
-    </div>
+    <button class="btn btn-primary btn-lg" style="float:right" type="button" th:onclick="|location.href='@{/board/member/write(curPage=${searchCriteria.getCurPage()},dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},categorySeq=${searchCriteria.getCategorySeq()}, text=${searchCriteria.getText()})}'|">
+        등록
+    </button>
 </div>
 
 

@@ -15,7 +15,7 @@
             <tr th:if="${type == 'free' || type == 'member'}">
                 <th class="table-primary pl-3 ">카테고리</th>
                 <td>
-                    <select th:field="*{categorySeq}" class="form-select w-50" name="category" id="category">
+                    <select th:field="*{categorySeq}" class="form-select w-50" name="categorySeq" id="categorySeq">
                         <option value="0" selected>카테고리 선택</option>
                         <th:block th:each="category:${categoryList}">
                             <option th:value="${category.getCategorySeq()}" th:text="${category.getName()}"></option>
@@ -58,8 +58,11 @@
         </table>
 
         <div class="row">
-            <div class="col text-start">
-                <button class="btn btn-danger btn-lg" type="button" th:onclick="|location.href='@{/board/{type}(type=${type},curPage=${searchCriteria.getCurPage()},dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},text=${searchCriteria.getText()})}'|" >취소</button>
+            <div th:if="${type == 'notify' || type == 'news'}" class="col text-start">
+                <button class="btn btn-danger btn-lg" type="button"th:onclick="|location.href='@{/board/{type}(type=${type},curPage=${searchCriteria.getCurPage()},dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},text=${searchCriteria.getText()})}'|" >취소</button>
+            </div>
+            <div th:unless="${type == 'notify' || type == 'news'}" class="col text-start">
+                <button class="btn btn-danger btn-lg" type="button"th:onclick="|location.href='@{/board/{type}(type=${type},curPage=${searchCriteria.getCurPage()},dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},categorySeq=${searchCriteria.getCategorySeq},text=${searchCriteria.getText()})}'|" >취소</button>
             </div>
             <div class="col text-end">
                 <button class="btn btn-primary btn-lg" type="button" onclick="validCheck()">저장</button>

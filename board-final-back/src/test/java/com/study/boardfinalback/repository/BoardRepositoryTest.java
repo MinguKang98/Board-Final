@@ -4,7 +4,6 @@ import com.study.boardfinalback.domain.Board;
 import com.study.boardfinalback.domain.criteria.PagingCriteria;
 import com.study.boardfinalback.domain.criteria.SearchCriteria;
 import com.study.boardfinalback.domain.criteria.SearchPagingCriteria;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @MybatisTest
@@ -39,18 +37,6 @@ class BoardRepositoryTest {
     }
 
     @Test
-    public void 게시글_카테고리_가져오기() throws Exception {
-        //given
-        int categorySeq = 2;
-
-        ///when
-        List<Board> boardList = boardRepository.getBoardListByCategorySeq(categorySeq);
-
-        //then
-        assertThat(boardList.size()).isEqualTo(2);
-    }
-
-    @Test
     public void 검색조건_게시글_총_갯수() throws Exception {
         //given
         SearchCriteria search = SearchCriteria.builder()
@@ -62,7 +48,7 @@ class BoardRepositoryTest {
                 .build();
 
         ///when
-        int total = boardRepository.getTotalBoardCountBySearchCriteria(search);
+        int total = boardRepository.getTotalFreeBoardCountBySearchCriteria(search);
 
         //then
         assertThat(total).isEqualTo(2);
@@ -78,7 +64,7 @@ class BoardRepositoryTest {
                 .text("test")
                 .curPage(1)
                 .build();
-        int total = boardRepository.getTotalBoardCountBySearchCriteria(search);
+        int total = boardRepository.getTotalFreeBoardCountBySearchCriteria(search);
 
         PagingCriteria paging = PagingCriteria.builder()
                 .curPage(search.getCurPage())
@@ -95,7 +81,7 @@ class BoardRepositoryTest {
                 .build();
 
         ///when
-        List<Board> boardList = boardRepository.getBoardListBySearchPagingCriteria(searchPaging);
+        List<Board> boardList = boardRepository.getFreeBoardListBySearchPagingCriteria(searchPaging);
 
         //then
         assertThat(boardList.size()).isEqualTo(2);
@@ -176,7 +162,7 @@ class BoardRepositoryTest {
         int commentCount = originBoard.get().getCommentCount();
 
         ///when
-        boardRepository.updateCommentCount(boardSeq);
+        boardRepository.increaseCommentCount(boardSeq);
 
         //then
         Optional<Board> newBoard = boardRepository.getBoardBySeq(boardSeq);
