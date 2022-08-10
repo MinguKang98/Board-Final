@@ -3,7 +3,7 @@ package com.study.boardfinalback.dto.boards;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 /**
@@ -13,16 +13,16 @@ import javax.validation.constraints.Size;
 @Setter
 public class BoardWriteDto {
 
-    @Size(min = 3, max = 200)
+    @Size(min = 3, max = 100, message = "제목은 3글자에서 100글자 사이여야 합니다.")
     private String title;
 
-    @Size(min = 3, max = 2000)
+    @Size(min = 3, max = 2000, message = "제목은 3글자에서 2000글자 사이여야 합니다.")
     private String content;
 
-    @NotBlank(message = "유저는 필수 입력 사항입니다.")
+    @Positive(message = "회원 정보는 필수 사항입니다.")
     private int userSeq;
 
-    @NotBlank(message = "카테고리는 필수 입력 사항입니다.")
+    @Positive(message = "카테고리 정보는 필수 사항입니다.")
     private int categorySeq;
 
 }
