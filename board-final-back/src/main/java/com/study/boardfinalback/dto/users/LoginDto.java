@@ -1,4 +1,4 @@
-package com.study.boardfinalback.dto;
+package com.study.boardfinalback.dto.users;
 
 import lombok.Getter;
 import lombok.Setter;
