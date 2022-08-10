@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://kit.fontawesome.com/052e9eaead.js" crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+<body>
+
+    <ul>
+        <li th:text="${user.getId()}"></li>
+        <li th:text="${board.getTitle()}"></li>
+        <li th:text="${board.getDateCreated()}"></li>
+        <li th:text="${(board.getDateUpdated() == null) ? '-' : board.getDateUpdated()}"></li>
+        <li th:text="${board.getContent()}"></li>
+        <li th:text="${board.getVisitCount()}"></li>
+        <div th:if="${board.getCategorySeq() != 1}">
+            <li th:text="${category.getName()}"></li>
+        </div>
+    </ul>
+
+    <div>
+        <div th:each="comment:${commentList}">
+            <span th:text="${comment.getDateCreated()}"></span>
+            <span th:text="${comment.getContent()}"></span>
+            <span th:text="${comment.getUserSeq()}"></span>
+        </div>
+    </div>
+
+    <div>
+        <div th:each="file:${fileList}">
+            <span th:text="|${file.getOriginName()}.${file.getExtension()}|"></span>
+        </div>
+    </div>
+
+
+    <div th:if="${userSeq == board.getUserSeq() || role == 'ROLE_ADMIN'}">
+        <button type="button" th:onclick="|location.href='@{/board/{type}/{boardSeq}/modify(type=${type},boardSeq=${board.getBoardSeq()})}'|">수정</button>
+        <button type="button" th:onclick="|location.href='@{/board/{type}/{boardSeq}/delete(type=${type},boardSeq=${board.getBoardSeq()})}'|">삭제</button>
+    </div>
+
+    <button type="button" th:onclick="|location.href='@{/board/{type}(type=${type})}'|">목록</button>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+</body>
+</html>
