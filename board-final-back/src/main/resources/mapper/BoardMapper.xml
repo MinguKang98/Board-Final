@@ -237,6 +237,7 @@
          title,
          content,
          file_exist,
+         board_type,
          user_seq,
          category_seq
         )
@@ -246,6 +247,7 @@
          #{title},
          #{content},
          #{fileExist},
+         #{boardType},
          #{userSeq},
          #{categorySeq}
         )
