@@ -5,6 +5,7 @@ import com.study.boardfinalback.domain.criteria.PagingCriteria;
 import com.study.boardfinalback.domain.criteria.SearchCriteria;
 import com.study.boardfinalback.domain.user.User;
 import com.study.boardfinalback.domain.user.UserRole;
+import com.study.boardfinalback.dto.boards.BoardModifyDto;
 import com.study.boardfinalback.dto.boards.BoardWriteDto;
 import com.study.boardfinalback.dto.files.FileDto;
 import com.study.boardfinalback.service.*;
@@ -17,6 +18,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -315,12 +319,92 @@ public class BoardController {
         return String.format("redirect:/board/%s/%d", type, boardSeq);
     }
 
-    // TODO 게시글 수정
-
     /**
+     * call board modify page
      *
      * @param type : 게시글 종류
-     * @param boardSeq : 삭제할 게시글의 boardSeq
+     * @param boardSeq : 게시글 boardSeq
+     * @param searchCriteria : 검색 기준
+    * @param model
+     * @return
+     */
+    @GetMapping("/board/{type}/{boardSeq}/modify")
+    public String boardModify(@PathVariable("type") String type,
+                              @PathVariable("boardSeq") int boardSeq,
+                              SearchCriteria searchCriteria,
+                              Model model) {
+
+        boolean isAuthenticated = (boolean) model.getAttribute("authenticated");
+        if (isAuthenticated == false) {
+            return String.format("redirect:/login");
+        }
+
+        if (boardTypeMap.get(type) == null) {
+            return "redirect:/";
+        }
+
+        String role = model.getAttribute("role").toString();
+        int userSeq = Integer.parseInt(model.getAttribute("userSeq").toString());
+        Board board = boardService.getBoardBySeq(boardSeq);
+
+        if ((UserRole.ROLE_MEMBER.toString().equals(role)) && userSeq != board.getUserSeq()) {
+            return String.format("redirect:/board/%s/%d", type, boardSeq);
+        }
+
+        Category category = categoryService.getCategoryBySeq(board.getCategorySeq());
+        List<File> fileList = fileService.getFileListByBoardSeq(boardSeq);
+
+        model.addAttribute("type", type);
+        model.addAttribute("board", board);
+        model.addAttribute("category", category);
+        model.addAttribute("fileList", fileList);
+        model.addAttribute("searchCriteria", searchCriteria);
+
+        return "/boards/boardModify";
+    }
+
+    @PostMapping("/boardModify")
+    public String modify(@RequestParam("type") String type,
+                         @RequestParam("boardSeq") int boardSeq,
+                         FileDto fileDto,
+                         @Valid BoardModifyDto boardModifyDto,
+                         BindingResult bindingResult,
+                         MultipartHttpServletRequest request,
+                         SearchCriteria searchCriteria,
+                         RedirectAttributes redirectAttributes) throws IOException {
+
+        redirectAttributes.addAttribute("curPage", searchCriteria.getCurPage());
+        redirectAttributes.addAttribute("dateCreatedFrom", searchCriteria.getDateCreatedFrom());
+        redirectAttributes.addAttribute("dateCreatedTo", searchCriteria.getDateCreatedTo());
+        redirectAttributes.addAttribute("categorySeq", searchCriteria.getCategorySeq());
+        redirectAttributes.addAttribute("text", searchCriteria.getText());
+
+        if (bindingResult.hasErrors()) {
+            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+            for (FieldError fieldError : fieldErrors) {
+                log.info("게시글 수정 형식 에러 : {}", fieldError.getDefaultMessage());
+            }
+            return String.format("redirect:/board/%s/%d/modify", type, boardSeq);
+        }
+
+        Board board = Board.builder()
+                .boardSeq(boardSeq)
+                .title(boardModifyDto.getTitle())
+                .content(boardModifyDto.getContent())
+                .build();
+
+        List<File> addFileList = fileUtils.getAddFileList(fileDto.getFiles(), boardSeq);
+        List<File> deleteFileList = fileUtils.getDeleteFileList(fileService.getFileListByBoardSeq(boardSeq), request);
+
+        boardService.updateBoard(board, addFileList, deleteFileList);
+        log.info("게시글이 수정되었습니다. boardSeq={}", boardSeq);
+
+        return String.format("redirect:/board/%s", type);
+    }
+
+    /**
+     * @param type           : 게시글 종류
+     * @param boardSeq       : 삭제할 게시글의 boardSeq
      * @param searchCriteria : 검색 기준
      * @param model
      * @return : 로그인 되어있지 않으면 redirect:/login, 지정된 type이 아니면 redirect:/,
@@ -360,7 +444,7 @@ public class BoardController {
     /**
      * 게시글 삭제 후 게시판으로 이동
      *
-     * @param type : 게시글 종류
+     * @param type     : 게시글 종류
      * @param boardSeq : 삭제할 Board의 boardSeq
      * @return : redirect:/board/{type}
      */
