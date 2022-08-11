@@ -34,7 +34,9 @@
 
     <update id="updateComment" parameterType="Comment">
         UPDATE comments
-        SET content = #{content}
+        SET
+        date_updated = NOW(),
+        content = #{content}
         WHERE comment_seq = #{commentSeq}
     </update>
 

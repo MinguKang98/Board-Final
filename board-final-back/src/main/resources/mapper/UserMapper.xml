@@ -58,7 +58,9 @@
     <!--입력받은 User의 password update-->
     <update id="updatePassword" parameterType="User">
         UPDATE users
-        SET password = #{password}
+        SET
+        date_updated = NOW(),
+        password = #{password}
         WHERE user_seq = #{userSeq}
     </update>
 
