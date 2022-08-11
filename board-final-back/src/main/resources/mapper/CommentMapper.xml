@@ -16,7 +16,7 @@
     </select>
 
     <insert id="addComment" parameterType="Comment" useGeneratedKeys="true" keyProperty="commentSeq">
-        INSERT INTO comment
+        INSERT INTO comments
         (
             date_created,
             content,
