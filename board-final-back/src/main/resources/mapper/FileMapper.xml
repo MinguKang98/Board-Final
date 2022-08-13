@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.boardfinalback.repository.FileRepository">
+
+    <select id="getFileListByBoardSeq" parameterType="int" resultType="File">
+        SELECT *
+        FROM files
+        WHERE board_seq = #{boardSeq}
+    </select>
+
+    <select id="getFileBySeq" parameterType="int" resultType="File">
+        SELECT *
+        FROM files
+        WHERE file_seq = #{fileSeq}
+    </select>
+
+    <insert id="addFile" parameterType="File" useGeneratedKeys="true" keyProperty="fileSeq">
+        INSERT INTO files
+        (
+            date_created,
+            origin_name,
+            system_name,
+            extension,
+            board_seq
+        )
+        VALUES
+        (
+            NOW(),
+            #{originName},
+            #{systemName},
+            #{extension},
+            #{boardSeq}
+        )
+    </insert>
+
+    <delete id="deleteFile" parameterType="int">
+        DELETE
+        FROM files
+        WHERE file_seq = #{fileSeq}
+    </delete>
+
+</mapper>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://kit.fontawesome.com/052e9eaead.js" crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>게시글 등록</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+<body>
+<div class="container mt-5">
+    <form th:action="@{/boardWrite/{type}(type=${type})}" th:object="${form}" method="post" name="writeForm" id="writeForm" enctype="multipart/form-data">
+        <input type="hidden" name="userSeq" th:value="${userSeq}">
+        <table class="table">
+            <tr th:if="${type == 'free' || type == 'member'}">
+                <th class="table-primary pl-3 ">카테고리</th>
+                <td>
+                    <select th:field="*{categorySeq}" class="form-select w-50" name="categorySeq" id="categorySeq">
+                        <option value="0" selected>카테고리 선택</option>
+                        <th:block th:each="category:${categoryList}">
+                            <option th:value="${category.getCategorySeq()}" th:text="${category.getName()}"></option>
+                        </th:block>
+                    </select>
+                    <span id="categoryWarning"></span>
+                </td>
+            </tr>
+            <tr th:unless="${type == 'free' || type == 'member'}">
+                <input type="hidden" name="categorySeq" value="1">
+            </tr>
+            <tr>
+                <th class="table-primary pl-3 " >제목</th>
+                <td>
+                    <input th:field="*{title}" class="form-control" type="text" name="title" id="title" required minlength="4" maxlength="100"/>
+                    <span id="titleWarning"></span>
+                </td>
+            </tr>
+            <tr>
+                <th class="table-primary pl-3 " >내용</th>
+                <td>
+                    <textarea th:field="*{content}" class="form-control" style="height:300px; resize: none;" name="content" id="content" required minlength="4" maxlength="2000"></textarea>
+                    <span id="contentWarning"></span>
+                </td>
+            </tr>
+            <tr>
+                <th class="table-primary pl-3 " >파일첨부</th>
+                <td>
+                    <div class="my-2">
+                        <input class="form-control w-50" type="file" name="files" id="file1"/>
+                    </div>
+                    <div class="my-2">
+                        <input class="form-control w-50" type="file" name="files" id="file2"/>
+                    </div>
+                    <div class="my-2">
+                        <input class="form-control w-50" type="file" name="files" id="file3"/>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <div class="row">
+            <div th:if="${type == 'notify' || type == 'news'}" class="col text-start">
+                <button class="btn btn-danger btn-lg" type="button"th:onclick="|location.href='@{/board/{type}(type=${type},curPage=${searchCriteria.getCurPage()},dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},text=${searchCriteria.getText()})}'|" >취소</button>
+            </div>
+            <div th:unless="${type == 'notify' || type == 'news'}" class="col text-start">
+                <button class="btn btn-danger btn-lg" type="button"th:onclick="|location.href='@{/board/{type}(type=${type},curPage=${searchCriteria.getCurPage()},dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},categorySeq=${searchCriteria.getCategorySeq},text=${searchCriteria.getText()})}'|" >취소</button>
+            </div>
+            <div class="col text-end">
+                <button class="btn btn-primary btn-lg" type="button" onclick="validCheck()">저장</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    const validCheck = () => {
+        //TODO 유효성 검사
+        document.writeForm.submit();
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+</body>
+</html>

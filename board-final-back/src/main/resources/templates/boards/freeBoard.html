@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://kit.fontawesome.com/052e9eaead.js" crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>자유게시판</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container">
+        <a class="navbar-brand" href="/">Home</a>
+        <a class="navbar-brand" href="/board/free">자유게시판</a>
+    </div>
+</nav>
+
+<div class="container">
+    <form class="row" method="get" name="searchForm" id="searchForm" action="/board/free">
+        <div class="col-5">
+            <div class="row">
+                <div class="col-2 align-middle">등록일</div>
+                <div class="col-4">
+                    <input class="form-control" type="date" name="dateCreatedFrom" id="dateCreatedFrom"/>
+                </div>
+                <div class="col-1 align-middle"> ~ </div>
+                <div class="col-4">
+                    <input class="form-control" type="date" name="dateCreatedTo" id="dateCreatedTo"/>
+                </div>
+            </div>
+        </div>
+        <div class="col-2">
+            <select class="form-select" name="categorySeq" id="categorySeq">
+                <option value="0" selected>전체 카테고리</option>
+                <th:block th:each="category:${categoryList}">
+                    <option th:value="${category.getCategorySeq()}" th:text="${category.getName()}"></option>
+                </th:block>
+            </select>
+        </div>
+        <div class="col-4">
+            <input class="form-control" type="text" name="text" id="text" placeholder="검색어를 입력해 주세요. (제목+작성자+내용)"/>
+        </div>
+        <div class="col-1">
+            <button class="btn btn-outline-primary float-right" type="submit">검색</button>
+        </div>
+    </form>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <label th:text="|총 ${totalBoardCount}건|"></label>
+    </div>
+    <br>
+    <table class="table">
+        <thead class="table-light">
+        <tr>
+            <th>카테고리</th>
+            <th></th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>조회수</th>
+            <th>등록 일시</th>
+            <th>수정 일시</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="board:${boardList}">
+            <td th:text="${categoryList.get(board.getCategorySeq() - 2).getName()}"></td>
+            <td th:if="${board.getFileExist() == true}"><i class="fas fa-paperclip"></i></td>
+            <td th:unless="${board.getFileExist() == true}"></td>
+            <td>
+                <a th:href="@{/board/free/{boardSeq}(boardSeq=${board.getBoardSeq()}, curPage=${pagingCriteria.getCurPage()},
+                    dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},
+                    categorySeq=${searchCriteria.getCategorySeq()}, text=${searchCriteria.getText()})}">
+                    <span th:text="|${board.getTitle()} (${board.getCommentCount()})|"></span>
+                </a>
+            </td>
+            <td th:text="${board.getUserSeq()}"></td>
+            <td th:text="${board.getVisitCount()}"></td>
+            <td th:text="${board.getDateCreated()}"></td>
+            <td th:if="${board.getDateUpdated()} == null" th:text="'-'"></td>
+            <td th:unless="${board.getDateUpdated()} == null" th:text="${board.getDateUpdated()}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    <br>
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                <a class="page-link" th:href="@{/board/free(curPage=1, dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},
+                    categorySeq=${searchCriteria.getCategorySeq()}, text=${searchCriteria.getText()})}">
+                    <i class="fas fa-chevron-left"></i><i class="fas fa-chevron-left"></i>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" th:href="@{/board/free(curPage=${(pagingCriteria.getCurPage() - 10 < 0) ? 1 : pagingCriteria.getCurPage() - 10},
+                    dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},
+                    categorySeq=${searchCriteria.getCategorySeq()}, text=${searchCriteria.getText()})}">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </li>
+            <th:block th:each="num : ${#numbers.sequence(pagingCriteria.getFirstPage(),pagingCriteria.getLastPage())}">
+                <li th:if="${num} == ${pagingCriteria.getCurPage()}" class="page-item active">
+                    <a th:text="${num}" class="page-link" href="#" ></a>
+                </li>
+                <li th:unless="${num} == ${pagingCriteria.getCurPage()}" class="page-item">
+                    <a th:text="${num}" class="page-link" th:href="@{/board/free(curPage=${num}, dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},
+                       categorySeq=${searchCriteria.getCategorySeq()}, text=${searchCriteria.getText()})}"></a>
+                </li>
+            </th:block>
+
+            <li class="page-item">
+                <a class="page-link" th:href="@{/board/free(curPage=${(pagingCriteria.getCurPage() + 10 > pagingCriteria.getTotalPageCount()) ? pagingCriteria.getTotalPageCount() : pagingCriteria.getCurPage() + 10 },
+                dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},
+                   categorySeq=${searchCriteria.getCategorySeq()}, text=${searchCriteria.getText()})}">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" th:href="@{/board/free(curPage=${pagingCriteria.getTotalPageCount()}, dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},
+                   categorySeq=${searchCriteria.getCategorySeq()}, text=${searchCriteria.getText()})}">
+                    <i class="fas fa-chevron-right"></i><i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <button class="btn btn-primary btn-lg" style="float:right" type="button" th:onclick="|location.href='@{/board/free/write(curPage=${searchCriteria.getCurPage()},dateCreatedFrom=${searchCriteria.getDateCreatedFrom()}, dateCreatedTo=${searchCriteria.getDateCreatedTo()},categorySeq=${searchCriteria.getCategorySeq()}, text=${searchCriteria.getText()})}'|">
+        등록
+    </button>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+</body>
+</html>
