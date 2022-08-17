@@ -1,7 +1,7 @@
 package com.study.boardfinalback.service;
 
 import com.study.boardfinalback.domain.Comment;
-import com.study.boardfinalback.error.CommentNotFoundException;
+import com.study.boardfinalback.error.comments.CommentNotFoundException;
 import com.study.boardfinalback.repository.BoardRepository;
 import com.study.boardfinalback.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;

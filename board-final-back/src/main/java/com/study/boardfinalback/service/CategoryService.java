@@ -1,7 +1,7 @@
 package com.study.boardfinalback.service;
 
 import com.study.boardfinalback.domain.Category;
-import com.study.boardfinalback.error.CategoryNotFoundException;
+import com.study.boardfinalback.error.categories.CategoryNotFoundException;
 import com.study.boardfinalback.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

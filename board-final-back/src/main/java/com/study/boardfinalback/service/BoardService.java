@@ -5,7 +5,7 @@ import com.study.boardfinalback.domain.File;
 import com.study.boardfinalback.domain.criteria.PagingCriteria;
 import com.study.boardfinalback.domain.criteria.SearchCriteria;
 import com.study.boardfinalback.domain.criteria.SearchPagingCriteria;
-import com.study.boardfinalback.error.BoardNotFoundException;
+import com.study.boardfinalback.error.boards.BoardNotFoundException;
 import com.study.boardfinalback.repository.BoardRepository;
 import com.study.boardfinalback.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
