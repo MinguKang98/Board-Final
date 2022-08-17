@@ -3,6 +3,8 @@ package com.study.boardfinalback.apiExceptionHandler;
 import com.study.boardfinalback.apiDto.ErrorResponse;
 import com.study.boardfinalback.error.common.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -20,6 +22,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestControllerAdvice
+@Order(Ordered.LOWEST_PRECEDENCE)
 public class CommonExceptionHandler {
 
     /**
@@ -87,8 +90,8 @@ public class CommonExceptionHandler {
      * @param e
      * @return 500 with ErrorResponse
      */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
         log.info(e.getMessage());
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
