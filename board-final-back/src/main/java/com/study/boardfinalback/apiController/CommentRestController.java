@@ -1,9 +1,11 @@
 package com.study.boardfinalback.apiController;
 
 import com.study.boardfinalback.apiDto.comments.CommentContentDto;
+import com.study.boardfinalback.apiDto.comments.CommentWithUserDto;
 import com.study.boardfinalback.domain.Comment;
 import com.study.boardfinalback.domain.user.User;
 import com.study.boardfinalback.service.BoardService;
+import com.study.boardfinalback.service.CommentQueryService;
 import com.study.boardfinalback.service.CommentService;
 import com.study.boardfinalback.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
@@ -24,21 +26,22 @@ import java.util.List;
 public class CommentRestController {
 
     private final CommentService commentService;
+    private final CommentQueryService commentQueryService;
     private final BoardService boardService;
 
     /**
      * 입력받은 boardSeq을 가지는 Board의 모든 Comment를 가져온다
      *
      * @param boardSeq : Comment를 가져올 Board의 boardSeq
-     * @return : 200 with Comment List
+     * @return : 200 with CommentWithUserDto List
      */
     @GetMapping("/api/boards/{boardSeq}/comments")
-    public ResponseEntity<List<Comment>> comments(@PathVariable("boardSeq") int boardSeq) {
+    public ResponseEntity<List<CommentWithUserDto>> comments(@PathVariable("boardSeq") int boardSeq) {
 
         boardService.getBoardBySeq(boardSeq);
 
-        List<Comment> commentList = commentService.getCommentListByBoardSeq(boardSeq);
-        return new ResponseEntity<>(commentList, HttpStatus.OK);
+        List<CommentWithUserDto> commentWithUserDtoList = commentQueryService.getCommentWithUserDtoListByBoardSeq(boardSeq);
+        return new ResponseEntity(commentWithUserDtoList, HttpStatus.OK);
     }
 
     /**
