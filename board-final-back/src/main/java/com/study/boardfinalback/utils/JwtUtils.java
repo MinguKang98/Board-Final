@@ -1,6 +1,6 @@
 package com.study.boardfinalback.utils;
 
-import com.study.boardfinalback.domain.user.User;
+import com.study.boardfinalback.domain.users.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;

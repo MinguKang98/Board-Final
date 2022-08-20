@@ -1,8 +1,8 @@
 package com.study.boardfinalback.controller;
 
-import com.study.boardfinalback.domain.user.User;
-import com.study.boardfinalback.domain.user.UserRole;
-import com.study.boardfinalback.domain.user.UserStatus;
+import com.study.boardfinalback.domain.users.User;
+import com.study.boardfinalback.domain.users.UserRole;
+import com.study.boardfinalback.domain.users.UserStatus;
 import com.study.boardfinalback.dto.users.LoginDto;
 import com.study.boardfinalback.dto.users.RegisterDto;
 import com.study.boardfinalback.dto.users.PasswordChangeDto;

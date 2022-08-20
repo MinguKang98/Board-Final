@@ -1,6 +1,6 @@
 package com.study.boardfinalback.controller;
 
-import com.study.boardfinalback.error.BusinessException;
+import com.study.boardfinalback.error.common.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,8 +19,8 @@ public class GlobalExceptionHandler {
      * @param e
      * @return : /errors/404.html
      */
-    @ExceptionHandler(BusinessException.class)
-    public String handleBusinessException(BusinessException e) {
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public String handleBusinessException(ResourceNotFoundException e) {
         log.info(e.getMessage());
         return "/errors/404";
     }
@@ -43,10 +43,10 @@ public class GlobalExceptionHandler {
      * @param e
      * @return : /errors/500.html
      */
-    @ExceptionHandler(RuntimeException.class)
-    public String handleException(RuntimeException e) {
-        log.info(e.getMessage());
-        return "/errors/500";
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    public String handleException(RuntimeException e) {
+//        log.info(e.getMessage());
+//        return "/errors/500";
+//    }
 
 }

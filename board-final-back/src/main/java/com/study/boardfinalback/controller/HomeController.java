@@ -1,9 +1,9 @@
 package com.study.boardfinalback.controller;
 
-import com.study.boardfinalback.domain.Board;
+import com.study.boardfinalback.domain.boards.Board;
 import com.study.boardfinalback.domain.criteria.PagingCriteria;
 import com.study.boardfinalback.domain.criteria.SearchCriteria;
-import com.study.boardfinalback.service.BoardService;
+import com.study.boardfinalback.service.boards.BoardService;
 import com.study.boardfinalback.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

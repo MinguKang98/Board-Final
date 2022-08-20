@@ -3,10 +3,13 @@ package com.study.boardfinalback.utils;
 import com.study.boardfinalback.domain.File;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -109,6 +112,21 @@ public class FileUtils {
         }
 
         return fileList;
+    }
+
+    /**
+     * File을 Resource로 변경
+     *
+     * @param file : 변경할 File
+     * @return : 입력받은 File의 Resource
+     * @throws IOException
+     */
+    public Resource getFileResource(File file) throws IOException {
+
+        java.io.File downloadFile = new java.io.File(DOWNLOAD_DIR + SEPARATOR + file.getSystemName());
+        InputStreamResource resource = new InputStreamResource((new FileInputStream(downloadFile)));
+
+        return resource;
     }
 
 }

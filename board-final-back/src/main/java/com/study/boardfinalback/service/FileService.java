@@ -1,7 +1,7 @@
 package com.study.boardfinalback.service;
 
 import com.study.boardfinalback.domain.File;
-import com.study.boardfinalback.error.FileNotFoundException;
+import com.study.boardfinalback.error.files.FileNotFoundException;
 import com.study.boardfinalback.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

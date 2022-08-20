@@ -1,9 +1,10 @@
 package com.study.boardfinalback.repository;
 
-import com.study.boardfinalback.domain.Board;
+import com.study.boardfinalback.domain.boards.Board;
 import com.study.boardfinalback.domain.criteria.PagingCriteria;
 import com.study.boardfinalback.domain.criteria.SearchCriteria;
 import com.study.boardfinalback.domain.criteria.SearchPagingCriteria;
+import com.study.boardfinalback.repository.boards.BoardRepository;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.boardfinalback.repository.boards.BoardRepository">
+
+    <select id="getBoardList" resultType="Board">
+        SELECT *
+        FROM boards
+    </select>
+
+    <select id="getTotalFreeBoardCountBySearchCriteria" parameterType="SearchCriteria" resultType="int">
+        SELECT COUNT(*)
+        FROM boards
+
+        <where>
+            board_type = 'FREE'
+            <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
+                <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
+                    AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+                </if>
+            </if>
+
+            <if test=" categorySeq != null and categorySeq != 0 ">
+                AND category_seq = #{categorySeq}
+            </if>
+
+            <if test=" text != null and text != '' ">
+                AND (
+                title LIKE CONCAT('%',#{text},'%')
+                OR content LIKE CONCAT('%',#{text},'%')
+                )
+            </if>
+        </where>
+
+    </select>
+
+    <select id="getFreeBoardListBySearchPagingCriteria" parameterType="SearchPagingCriteria" resultType="Board">
+        SELECT B.*
+        FROM (
+        SELECT *
+        FROM boards
+
+        <where>
+            board_type = 'FREE'
+            <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
+                <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
+                    AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+                </if>
+            </if>
+
+            <if test=" categorySeq != null and categorySeq != 0 ">
+                AND category_seq = #{categorySeq}
+            </if>
+
+            <if test=" text != null and text != '' ">
+                AND (
+                title LIKE CONCAT('%',#{text},'%')
+                OR content LIKE CONCAT('%',#{text},'%')
+                )
+            </if>
+        </where>
+        ) B
+        ORDER BY board_seq DESC
+        LIMIT #{boardCountPerPage} OFFSET #{firstBoardNum}
+    </select>
+
+    <select id="getTotalNotifyBoardCountBySearchCriteria" parameterType="SearchCriteria" resultType="int">
+        SELECT COUNT(*)
+        FROM boards
+
+        <where>
+            board_type = 'NOTIFY'
+            <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
+                <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
+                    AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+                </if>
+            </if>
+
+            <if test=" text != null and text != '' ">
+                AND (
+                title LIKE CONCAT('%',#{text},'%')
+                OR content LIKE CONCAT('%',#{text},'%')
+                )
+            </if>
+        </where>
+
+    </select>
+
+    <select id="getNotifyBoardListBySearchPagingCriteria" parameterType="SearchPagingCriteria" resultType="Board">
+        SELECT B.*
+        FROM (
+        SELECT *
+        FROM boards
+
+        <where>
+            board_type = 'NOTIFY'
+            <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
+                <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
+                    AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+                </if>
+            </if>
+
+            <if test=" text != null and text != '' ">
+                AND (
+                title LIKE CONCAT('%',#{text},'%')
+                OR content LIKE CONCAT('%',#{text},'%')
+                )
+            </if>
+        </where>
+        ) B
+        ORDER BY board_seq DESC
+        LIMIT #{boardCountPerPage} OFFSET #{firstBoardNum}
+    </select>
+
+    <select id="getTotalMemberBoardCountBySearchCriteria" parameterType="SearchCriteria" resultType="int">
+        SELECT COUNT(*)
+        FROM boards
+
+        <where>
+            board_type = 'MEMBER'
+            <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
+                <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
+                    AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+                </if>
+            </if>
+
+            <if test=" categorySeq != null and categorySeq != 0 ">
+                AND category_seq = #{categorySeq}
+            </if>
+
+            <if test=" text != null and text != '' ">
+                AND (
+                title LIKE CONCAT('%',#{text},'%')
+                OR content LIKE CONCAT('%',#{text},'%')
+                )
+            </if>
+        </where>
+
+    </select>
+
+    <select id="getMemberBoardListBySearchPagingCriteria" parameterType="SearchPagingCriteria" resultType="Board">
+        SELECT B.*
+        FROM (
+        SELECT *
+        FROM boards
+
+        <where>
+            board_type = 'MEMBER'
+            <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
+                <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
+                    AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+                </if>
+            </if>
+
+            <if test=" categorySeq != null and categorySeq != 0 ">
+                AND category_seq = #{categorySeq}
+            </if>
+
+            <if test=" text != null and text != '' ">
+                AND (
+                title LIKE CONCAT('%',#{text},'%')
+                OR content LIKE CONCAT('%',#{text},'%')
+                )
+            </if>
+        </where>
+        ) B
+        ORDER BY board_seq DESC
+        LIMIT #{boardCountPerPage} OFFSET #{firstBoardNum}
+    </select>
+
+    <select id="getTotalNewsBoardCountBySearchCriteria" parameterType="SearchCriteria" resultType="int">
+        SELECT COUNT(*)
+        FROM boards
+
+        <where>
+            board_type = 'NEWS'
+            <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
+                <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
+                    AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+                </if>
+            </if>
+
+            <if test=" categorySeq != null and categorySeq != 0 ">
+                AND category_seq = #{categorySeq}
+            </if>
+
+            <if test=" text != null and text != '' ">
+                AND (
+                title LIKE CONCAT('%',#{text},'%')
+                OR content LIKE CONCAT('%',#{text},'%')
+                )
+            </if>
+        </where>
+
+    </select>
+
+    <select id="getNewsBoardListBySearchPagingCriteria" parameterType="SearchPagingCriteria" resultType="Board">
+        SELECT B.*
+        FROM (
+        SELECT *
+        FROM boards
+
+        <where>
+            board_type = 'NEWS'
+            <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
+                <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
+                    AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+                </if>
+            </if>
+
+            <if test=" categorySeq != null and categorySeq != 0 ">
+                AND category_seq = #{categorySeq}
+            </if>
+
+            <if test=" text != null and text != '' ">
+                AND (
+                title LIKE CONCAT('%',#{text},'%')
+                OR content LIKE CONCAT('%',#{text},'%')
+                )
+            </if>
+        </where>
+        ) B
+        ORDER BY board_seq DESC
+        LIMIT #{boardCountPerPage} OFFSET #{firstBoardNum}
+    </select>
+
+    <select id="getBoardBySeq" parameterType="int" resultType="Board">
+        SELECT *
+        FROM boards
+        WHERE board_seq = #{boardSeq}
+    </select>
+
+    <insert id="addBoard" parameterType="Board" useGeneratedKeys="true" keyProperty="boardSeq">
+        INSERT INTO boards
+        (
+         date_created,
+         title,
+         content,
+         file_exist,
+         board_type,
+         user_seq,
+         category_seq
+        )
+        VALUES
+        (
+         NOW(),
+         #{title},
+         #{content},
+         #{fileExist},
+         #{boardType},
+         #{userSeq},
+         #{categorySeq}
+        )
+    </insert>
+
+    <update id="updateBoard" parameterType="Board">
+        UPDATE boards
+        <set>
+            <if test="title != null and title != '' ">
+                title = #{title},
+            </if>
+
+            <if test="content != null and content != '' ">
+                content = #{content},
+            </if>
+
+            <if test="fileExist != null">
+                file_exist = #{fileExist},
+            </if>
+
+            date_updated = NOW()
+        </set>
+
+        WHERE board_seq = #{boardSeq}
+    </update>
+
+    <delete id="deleteBoard" parameterType="int">
+        DELETE
+        FROM boards
+        WHERE board_seq = #{boardSeq}
+    </delete>
+
+    <update id="updateVisitCount" parameterType="int">
+        UPDATE boards
+        SET visit_count = visit_count + 1
+        WHERE board_seq = #{boardSeq}
+    </update>
+
+    <update id="increaseCommentCount" parameterType="int">
+        UPDATE boards
+        SET comment_count = comment_count + 1
+        WHERE board_seq = #{boardId}
+    </update>
+
+    <update id="decreaseCommentCount" parameterType="int">
+        UPDATE boards
+        SET comment_count = comment_count - 1
+        WHERE board_seq = #{boardId}
+    </update>
+
+</mapper>
