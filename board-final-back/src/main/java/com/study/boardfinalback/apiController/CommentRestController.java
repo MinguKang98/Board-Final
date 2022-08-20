@@ -1,12 +1,13 @@
 package com.study.boardfinalback.apiController;
 
+import com.study.boardfinalback.annotation.CurrentUser;
 import com.study.boardfinalback.apiDto.comments.CommentContentDto;
 import com.study.boardfinalback.apiDto.comments.CommentWithUserDto;
 import com.study.boardfinalback.domain.Comment;
-import com.study.boardfinalback.domain.user.User;
-import com.study.boardfinalback.service.BoardService;
-import com.study.boardfinalback.service.CommentQueryService;
-import com.study.boardfinalback.service.CommentService;
+import com.study.boardfinalback.domain.users.User;
+import com.study.boardfinalback.service.boards.BoardService;
+import com.study.boardfinalback.service.comments.CommentQueryService;
+import com.study.boardfinalback.service.comments.CommentService;
 import com.study.boardfinalback.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -5,7 +5,7 @@ import com.study.boardfinalback.domain.criteria.SearchCriteria;
 import com.study.boardfinalback.dto.comment.CommentDeleteDto;
 import com.study.boardfinalback.dto.comment.CommentModifyDto;
 import com.study.boardfinalback.dto.comment.CommentWriteDto;
-import com.study.boardfinalback.service.CommentService;
+import com.study.boardfinalback.service.comments.CommentService;
 import com.study.boardfinalback.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,7 @@
-package com.study.boardfinalback.apiController;
+package com.study.boardfinalback.argumentResolver;
 
-import com.study.boardfinalback.domain.user.User;
+import com.study.boardfinalback.annotation.CurrentUser;
+import com.study.boardfinalback.domain.users.User;
 import com.study.boardfinalback.error.users.AuthenticationException;
 import com.study.boardfinalback.service.UserService;
 import com.study.boardfinalback.utils.JwtUtils;

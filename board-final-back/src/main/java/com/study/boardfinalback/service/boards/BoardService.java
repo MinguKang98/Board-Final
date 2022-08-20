@@ -1,12 +1,12 @@
-package com.study.boardfinalback.service;
+package com.study.boardfinalback.service.boards;
 
-import com.study.boardfinalback.domain.Board;
+import com.study.boardfinalback.domain.boards.Board;
 import com.study.boardfinalback.domain.File;
 import com.study.boardfinalback.domain.criteria.PagingCriteria;
 import com.study.boardfinalback.domain.criteria.SearchCriteria;
 import com.study.boardfinalback.domain.criteria.SearchPagingCriteria;
 import com.study.boardfinalback.error.boards.BoardNotFoundException;
-import com.study.boardfinalback.repository.BoardRepository;
+import com.study.boardfinalback.repository.boards.BoardRepository;
 import com.study.boardfinalback.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -92,7 +92,6 @@ public class BoardService {
         SearchPagingCriteria searchPagingCriteria = SearchPagingCriteria.builder()
                 .dateCreatedFrom(searchCriteria.getDateCreatedFrom())
                 .dateCreatedTo(searchCriteria.getDateCreatedTo())
-                .categorySeq(searchCriteria.getCategorySeq())
                 .text(searchCriteria.getText())
                 .firstBoardNum(pagingCriteria.getFirstBoardNum())
                 .boardCountPerPage(pagingCriteria.getBoardCountPerPage())
@@ -158,7 +157,6 @@ public class BoardService {
         SearchPagingCriteria searchPagingCriteria = SearchPagingCriteria.builder()
                 .dateCreatedFrom(searchCriteria.getDateCreatedFrom())
                 .dateCreatedTo(searchCriteria.getDateCreatedTo())
-                .categorySeq(searchCriteria.getCategorySeq())
                 .text(searchCriteria.getText())
                 .firstBoardNum(pagingCriteria.getFirstBoardNum())
                 .boardCountPerPage(pagingCriteria.getBoardCountPerPage())

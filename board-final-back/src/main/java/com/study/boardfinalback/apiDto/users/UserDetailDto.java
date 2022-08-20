@@ -1,7 +1,7 @@
 package com.study.boardfinalback.apiDto.users;
 
-import com.study.boardfinalback.domain.user.User;
-import com.study.boardfinalback.domain.user.UserRole;
+import com.study.boardfinalback.domain.users.User;
+import com.study.boardfinalback.domain.users.UserRole;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

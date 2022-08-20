@@ -1,4 +1,4 @@
-package com.study.boardfinalback.domain;
+package com.study.boardfinalback.domain.boards;
 
 import lombok.Builder;
 import lombok.Getter;

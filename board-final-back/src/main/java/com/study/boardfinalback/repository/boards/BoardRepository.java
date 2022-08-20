@@ -1,6 +1,6 @@
-package com.study.boardfinalback.repository;
+package com.study.boardfinalback.repository.boards;
 
-import com.study.boardfinalback.domain.Board;
+import com.study.boardfinalback.domain.boards.Board;
 import com.study.boardfinalback.domain.criteria.SearchCriteria;
 import com.study.boardfinalback.domain.criteria.SearchPagingCriteria;
 import org.apache.ibatis.annotations.Mapper;

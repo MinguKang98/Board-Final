@@ -1,8 +1,8 @@
 package com.study.boardfinalback.utils;
 
 import com.study.boardfinalback.apiDto.users.PasswordChangeDto;
-import com.study.boardfinalback.domain.user.User;
-import com.study.boardfinalback.domain.user.UserRole;
+import com.study.boardfinalback.domain.users.User;
+import com.study.boardfinalback.domain.users.UserRole;
 import com.study.boardfinalback.error.users.AuthorizationException;
 import lombok.extern.slf4j.Slf4j;
 

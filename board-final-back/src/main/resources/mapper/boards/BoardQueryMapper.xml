@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.study.boardfinalback.repository.BoardQueryRepository">
+<mapper namespace="com.study.boardfinalback.repository.boards.BoardQueryRepository">
 
     <!--페이징된 boards(free), users, categories를 join하여 return -->
     <select id="getFreeBoardWithUserAndCategoryDtoListBySearchPagingCriteria" parameterType="SearchPagingCriteria"

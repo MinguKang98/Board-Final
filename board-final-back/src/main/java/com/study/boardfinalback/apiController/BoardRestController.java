@@ -1,13 +1,16 @@
 package com.study.boardfinalback.apiController;
 
+import com.study.boardfinalback.annotation.CurrentUser;
 import com.study.boardfinalback.apiDto.boards.*;
 import com.study.boardfinalback.domain.*;
+import com.study.boardfinalback.domain.boards.Board;
+import com.study.boardfinalback.domain.boards.BoardType;
 import com.study.boardfinalback.domain.criteria.PagingCriteria;
 import com.study.boardfinalback.domain.criteria.SearchCriteria;
-import com.study.boardfinalback.domain.user.User;
+import com.study.boardfinalback.domain.users.User;
 import com.study.boardfinalback.error.boards.BoardTypeException;
-import com.study.boardfinalback.service.BoardQueryService;
-import com.study.boardfinalback.service.BoardService;
+import com.study.boardfinalback.service.boards.BoardQueryService;
+import com.study.boardfinalback.service.boards.BoardService;
 import com.study.boardfinalback.service.FileService;
 import com.study.boardfinalback.utils.FileUtils;
 import com.study.boardfinalback.utils.UserUtils;

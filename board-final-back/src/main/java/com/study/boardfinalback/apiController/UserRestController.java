@@ -1,9 +1,10 @@
 package com.study.boardfinalback.apiController;
 
+import com.study.boardfinalback.annotation.CurrentUser;
 import com.study.boardfinalback.apiDto.users.*;
-import com.study.boardfinalback.domain.user.User;
-import com.study.boardfinalback.domain.user.UserRole;
-import com.study.boardfinalback.domain.user.UserStatus;
+import com.study.boardfinalback.domain.users.User;
+import com.study.boardfinalback.domain.users.UserRole;
+import com.study.boardfinalback.domain.users.UserStatus;
 import com.study.boardfinalback.error.users.AuthorizationException;
 import com.study.boardfinalback.error.users.DuplicateUserException;
 import com.study.boardfinalback.error.users.UserNotFoundException;

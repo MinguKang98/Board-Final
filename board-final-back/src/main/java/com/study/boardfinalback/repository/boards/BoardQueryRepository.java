@@ -1,4 +1,4 @@
-package com.study.boardfinalback.repository;
+package com.study.boardfinalback.repository.boards;
 
 import com.study.boardfinalback.apiDto.boards.BoardWithUserAndCategoryDto;
 import com.study.boardfinalback.domain.criteria.SearchPagingCriteria;

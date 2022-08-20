@@ -1,14 +1,18 @@
 package com.study.boardfinalback.controller;
 
 import com.study.boardfinalback.domain.*;
+import com.study.boardfinalback.domain.boards.Board;
+import com.study.boardfinalback.domain.boards.BoardType;
 import com.study.boardfinalback.domain.criteria.PagingCriteria;
 import com.study.boardfinalback.domain.criteria.SearchCriteria;
-import com.study.boardfinalback.domain.user.User;
-import com.study.boardfinalback.domain.user.UserRole;
+import com.study.boardfinalback.domain.users.User;
+import com.study.boardfinalback.domain.users.UserRole;
 import com.study.boardfinalback.dto.boards.BoardModifyDto;
 import com.study.boardfinalback.dto.boards.BoardWriteDto;
 import com.study.boardfinalback.dto.files.FileDto;
 import com.study.boardfinalback.service.*;
+import com.study.boardfinalback.service.boards.BoardService;
+import com.study.boardfinalback.service.comments.CommentService;
 import com.study.boardfinalback.utils.FileUtils;
 import com.study.boardfinalback.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +22,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 

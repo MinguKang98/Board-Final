@@ -1,4 +1,4 @@
-package com.study.boardfinalback.repository;
+package com.study.boardfinalback.repository.comments;
 
 import com.study.boardfinalback.domain.Comment;
 import org.apache.ibatis.annotations.Mapper;

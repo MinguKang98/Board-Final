@@ -1,6 +1,6 @@
 package com.study.boardfinalback.service;
 
-import com.study.boardfinalback.domain.user.User;
+import com.study.boardfinalback.domain.users.User;
 import com.study.boardfinalback.error.users.UserNotFoundException;
 import com.study.boardfinalback.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

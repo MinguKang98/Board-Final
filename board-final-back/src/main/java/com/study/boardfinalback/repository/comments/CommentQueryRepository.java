@@ -1,4 +1,4 @@
-package com.study.boardfinalback.repository;
+package com.study.boardfinalback.repository.comments;
 
 import com.study.boardfinalback.apiDto.comments.CommentWithUserDto;
 import org.apache.ibatis.annotations.Mapper;

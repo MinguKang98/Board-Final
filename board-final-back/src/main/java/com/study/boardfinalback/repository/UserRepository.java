@@ -1,6 +1,6 @@
 package com.study.boardfinalback.repository;
 
-import com.study.boardfinalback.domain.user.User;
+import com.study.boardfinalback.domain.users.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

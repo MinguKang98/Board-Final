@@ -2,7 +2,7 @@ package com.study.boardfinalback.apiController;
 
 import com.study.boardfinalback.apiDto.files.FileDetailDto;
 import com.study.boardfinalback.domain.File;
-import com.study.boardfinalback.service.BoardService;
+import com.study.boardfinalback.service.boards.BoardService;
 import com.study.boardfinalback.service.FileService;
 import com.study.boardfinalback.utils.FileUtils;
 import lombok.RequiredArgsConstructor;

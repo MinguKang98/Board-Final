@@ -1,6 +1,6 @@
 package com.study.boardfinalback.config;
 
-import com.study.boardfinalback.apiController.CurrentUserArgumentResolver;
+import com.study.boardfinalback.argumentResolver.CurrentUserArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

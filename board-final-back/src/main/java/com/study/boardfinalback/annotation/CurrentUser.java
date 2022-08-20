@@ -1,4 +1,4 @@
-package com.study.boardfinalback.apiController;
+package com.study.boardfinalback.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

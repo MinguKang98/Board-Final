@@ -1,10 +1,10 @@
-package com.study.boardfinalback.service;
+package com.study.boardfinalback.service.boards;
 
 import com.study.boardfinalback.apiDto.boards.BoardWithUserAndCategoryDto;
 import com.study.boardfinalback.domain.criteria.PagingCriteria;
 import com.study.boardfinalback.domain.criteria.SearchCriteria;
 import com.study.boardfinalback.domain.criteria.SearchPagingCriteria;
-import com.study.boardfinalback.repository.BoardQueryRepository;
+import com.study.boardfinalback.repository.boards.BoardQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

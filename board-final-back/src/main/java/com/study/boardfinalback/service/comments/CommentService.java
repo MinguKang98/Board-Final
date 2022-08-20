@@ -1,9 +1,9 @@
-package com.study.boardfinalback.service;
+package com.study.boardfinalback.service.comments;
 
 import com.study.boardfinalback.domain.Comment;
 import com.study.boardfinalback.error.comments.CommentNotFoundException;
-import com.study.boardfinalback.repository.BoardRepository;
-import com.study.boardfinalback.repository.CommentRepository;
+import com.study.boardfinalback.repository.boards.BoardRepository;
+import com.study.boardfinalback.repository.comments.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
