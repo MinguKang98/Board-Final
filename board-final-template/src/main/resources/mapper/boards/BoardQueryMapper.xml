@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.boardfinaltemplate.repository.boards.BoardQueryRepository">
+
+    <!--페이징된 boards(free), users, categories를 join하여 return -->
+    <select id="getFreeBoardWithUserAndCategoryDtoListBySearchPagingCriteria" parameterType="SearchPagingCriteria"
+            resultType="com.study.boardfinaltemplate.dto.boards.BoardWithUserAndCategoryDto">
+        SELECT
+            B.board_seq,
+            B.date_created,
+            B.date_updated,
+            B.title,
+            B.visit_count,
+            B.comment_count,
+            B.file_exist,
+            U.user_seq,
+            U.id AS userId,
+            C.category_seq,
+            C.name AS categoryName
+        FROM (
+            SELECT *
+            FROM boards
+
+            <where>
+                board_type = 'FREE'
+                <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
+                    <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
+                        AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+                    </if>
+                </if>
+
+                <if test=" categorySeq != null and categorySeq != 0 ">
+                    AND category_seq = #{categorySeq}
+                </if>
+
+                <if test=" text != null and text != '' ">
+                    AND (
+                    title LIKE CONCAT('%',#{text},'%')
+                    OR content LIKE CONCAT('%',#{text},'%')
+                    )
+                </if>
+            </where>
+        ) B
+        LEFT JOIN users AS U
+            ON B.user_seq = U.user_seq
+        LEFT JOIN categories AS C
+            ON B.category_seq = C.category_seq
+        ORDER BY board_seq DESC
+        LIMIT #{boardCountPerPage} OFFSET #{firstBoardNum}
+    </select>
+
+    <!--페이징된 boards(notify), users, categories를 join하여 return -->
+    <select id="getNotifyBoardWithUserAndCategoryDtoListBySearchPagingCriteria" parameterType="SearchPagingCriteria"
+            resultType="com.study.boardfinaltemplate.dto.boards.BoardWithUserAndCategoryDto">
+        SELECT
+            B.board_seq,
+            B.date_created,
+            B.date_updated,
+            B.title,
+            B.visit_count,
+            B.comment_count,
+            B.file_exist,
+            U.user_seq,
+            U.id AS userId,
+            C.category_seq,
+            C.name AS categoryName
+        FROM (
+            SELECT *
+            FROM boards
+
+            <where>
+                board_type = 'NOTIFY'
+                <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
+                    <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
+                        AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+                    </if>
+                </if>
+
+                <if test=" text != null and text != '' ">
+                    AND (
+                    title LIKE CONCAT('%',#{text},'%')
+                    OR content LIKE CONCAT('%',#{text},'%')
+                    )
+                </if>
+            </where>
+        ) B
+        LEFT JOIN users AS U
+            ON B.user_seq = U.user_seq
+        LEFT JOIN categories AS C
+            ON B.category_seq = C.category_seq
+        ORDER BY board_seq DESC
+        LIMIT #{boardCountPerPage} OFFSET #{firstBoardNum}
+    </select>
+
+    <!--페이징된 boards(member), users, categories를 join하여 return -->
+    <select id="getMemberBoardWithUserAndCategoryDtoListBySearchPagingCriteria" parameterType="SearchPagingCriteria"
+            resultType="com.study.boardfinaltemplate.dto.boards.BoardWithUserAndCategoryDto">
+        SELECT
+            B.board_seq,
+            B.date_created,
+            B.date_updated,
+            B.title,
+            B.visit_count,
+            B.comment_count,
+            B.file_exist,
+            U.user_seq,
+            U.id AS userId,
+            C.category_seq,
+            C.name AS categoryName
+        FROM (
+            SELECT *
+            FROM boards
+
+            <where>
+                board_type = 'MEMBER'
+                <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
+                    <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
+                        AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+                    </if>
+                </if>
+
+                <if test=" categorySeq != null and categorySeq != 0 ">
+                    AND category_seq = #{categorySeq}
+                </if>
+
+                <if test=" text != null and text != '' ">
+                    AND (
+                    title LIKE CONCAT('%',#{text},'%')
+                    OR content LIKE CONCAT('%',#{text},'%')
+                    )
+                </if>
+            </where>
+        ) B
+        LEFT JOIN users AS U
+            ON B.user_seq = U.user_seq
+        LEFT JOIN categories AS C
+            ON B.category_seq = C.category_seq
+        ORDER BY board_seq DESC
+        LIMIT #{boardCountPerPage} OFFSET #{firstBoardNum}
+    </select>
+
+    <!--페이징된 boards(news), users, categories를 join하여 return -->
+    <select id="getNewsBoardWithUserAndCategoryDtoListBySearchPagingCriteria" parameterType="SearchPagingCriteria"
+            resultType="com.study.boardfinaltemplate.dto.boards.BoardWithUserAndCategoryDto">
+        SELECT
+            B.board_seq,
+            B.date_created,
+            B.date_updated,
+            B.title,
+            B.visit_count,
+            B.comment_count,
+            B.file_exist,
+            U.user_seq,
+            U.id AS userId,
+            C.category_seq,
+            C.name AS categoryName
+        FROM (
+            SELECT *
+            FROM boards
+
+            <where>
+                board_type = 'NEWS'
+                <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
+                    <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
+                        AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+                    </if>
+                </if>
+
+                <if test=" categorySeq != null and categorySeq != 0 ">
+                    AND category_seq = #{categorySeq}
+                </if>
+
+                <if test=" text != null and text != '' ">
+                    AND (
+                    title LIKE CONCAT('%',#{text},'%')
+                    OR content LIKE CONCAT('%',#{text},'%')
+                    )
+                </if>
+            </where>
+        ) B
+        LEFT JOIN users AS U
+            ON B.user_seq = U.user_seq
+        LEFT JOIN categories AS C
+            ON B.category_seq = C.category_seq
+        ORDER BY board_seq DESC
+        LIMIT #{boardCountPerPage} OFFSET #{firstBoardNum}
+    </select>
+
+</mapper>
