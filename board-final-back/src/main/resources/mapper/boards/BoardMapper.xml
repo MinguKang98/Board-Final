@@ -37,29 +37,29 @@
     <select id="getFreeBoardListBySearchPagingCriteria" parameterType="SearchPagingCriteria" resultType="Board">
         SELECT B.*
         FROM (
-        SELECT *
-        FROM boards
+            SELECT *
+            FROM boards
 
-        <where>
-            board_type = 'FREE'
-            <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
-                <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
-                    AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+            <where>
+                board_type = 'FREE'
+                <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
+                    <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
+                        AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+                    </if>
                 </if>
-            </if>
 
-            <if test=" categorySeq != null and categorySeq != 0 ">
-                AND category_seq = #{categorySeq}
-            </if>
+                <if test=" categorySeq != null and categorySeq != 0 ">
+                    AND category_seq = #{categorySeq}
+                </if>
 
-            <if test=" text != null and text != '' ">
-                AND (
-                title LIKE CONCAT('%',#{text},'%')
-                OR content LIKE CONCAT('%',#{text},'%')
-                )
-            </if>
-        </where>
-        ) B
+                <if test=" text != null and text != '' ">
+                    AND (
+                    title LIKE CONCAT('%',#{text},'%')
+                    OR content LIKE CONCAT('%',#{text},'%')
+                    )
+                </if>
+            </where>
+        ) AS B
         ORDER BY board_seq DESC
         LIMIT #{boardCountPerPage} OFFSET #{firstBoardNum}
     </select>
@@ -89,25 +89,25 @@
     <select id="getNotifyBoardListBySearchPagingCriteria" parameterType="SearchPagingCriteria" resultType="Board">
         SELECT B.*
         FROM (
-        SELECT *
-        FROM boards
+            SELECT *
+            FROM boards
 
-        <where>
-            board_type = 'NOTIFY'
-            <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
-                <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
-                    AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+            <where>
+                board_type = 'NOTIFY'
+                <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
+                    <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
+                        AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+                    </if>
                 </if>
-            </if>
 
-            <if test=" text != null and text != '' ">
-                AND (
-                title LIKE CONCAT('%',#{text},'%')
-                OR content LIKE CONCAT('%',#{text},'%')
-                )
-            </if>
-        </where>
-        ) B
+                <if test=" text != null and text != '' ">
+                    AND (
+                    title LIKE CONCAT('%',#{text},'%')
+                    OR content LIKE CONCAT('%',#{text},'%')
+                    )
+                </if>
+            </where>
+        ) AS B
         ORDER BY board_seq DESC
         LIMIT #{boardCountPerPage} OFFSET #{firstBoardNum}
     </select>
@@ -141,29 +141,29 @@
     <select id="getMemberBoardListBySearchPagingCriteria" parameterType="SearchPagingCriteria" resultType="Board">
         SELECT B.*
         FROM (
-        SELECT *
-        FROM boards
+            SELECT *
+            FROM boards
 
-        <where>
-            board_type = 'MEMBER'
-            <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
-                <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
-                    AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+            <where>
+                board_type = 'MEMBER'
+                <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
+                    <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
+                        AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+                    </if>
                 </if>
-            </if>
 
-            <if test=" categorySeq != null and categorySeq != 0 ">
-                AND category_seq = #{categorySeq}
-            </if>
+                <if test=" categorySeq != null and categorySeq != 0 ">
+                    AND category_seq = #{categorySeq}
+                </if>
 
-            <if test=" text != null and text != '' ">
-                AND (
-                title LIKE CONCAT('%',#{text},'%')
-                OR content LIKE CONCAT('%',#{text},'%')
-                )
-            </if>
-        </where>
-        ) B
+                <if test=" text != null and text != '' ">
+                    AND (
+                    title LIKE CONCAT('%',#{text},'%')
+                    OR content LIKE CONCAT('%',#{text},'%')
+                    )
+                </if>
+            </where>
+        ) AS B
         ORDER BY board_seq DESC
         LIMIT #{boardCountPerPage} OFFSET #{firstBoardNum}
     </select>
@@ -198,28 +198,28 @@
         SELECT B.*
         FROM (
         SELECT *
-        FROM boards
+            FROM boards
 
-        <where>
-            board_type = 'NEWS'
-            <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
-                <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
-                    AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+            <where>
+                board_type = 'NEWS'
+                <if test=" dateCreatedFrom != null and dateCreatedFrom != '' ">
+                    <if test=" dateCreatedTo != null and dateCreatedTo != '' ">
+                        AND (DATE(date_created) BETWEEN #{dateCreatedFrom} AND #{dateCreatedTo})
+                    </if>
                 </if>
-            </if>
 
-            <if test=" categorySeq != null and categorySeq != 0 ">
-                AND category_seq = #{categorySeq}
-            </if>
+                <if test=" categorySeq != null and categorySeq != 0 ">
+                    AND category_seq = #{categorySeq}
+                </if>
 
-            <if test=" text != null and text != '' ">
-                AND (
-                title LIKE CONCAT('%',#{text},'%')
-                OR content LIKE CONCAT('%',#{text},'%')
-                )
-            </if>
-        </where>
-        ) B
+                <if test=" text != null and text != '' ">
+                    AND (
+                    title LIKE CONCAT('%',#{text},'%')
+                    OR content LIKE CONCAT('%',#{text},'%')
+                    )
+                </if>
+            </where>
+        ) AS B
         ORDER BY board_seq DESC
         LIMIT #{boardCountPerPage} OFFSET #{firstBoardNum}
     </select>

@@ -12,6 +12,8 @@ public class Messages {
     public static final String UNAUTHORIZED_USER_MESSAGE = "권한이 없습니다.";
     public static final String PASSWORD_CHANGE_DTO_INVALID_MESSAGE = "올바르지 않은 비밀번호 형식입니다.";
     
-    public static final String BOARD_WRONG_TYPE_MESSAGE = "게시글의 종류가 올바르지 않습니다.";
+    public static final String BOARD_TYPE_NOT_MATCH_MESSAGE = "게시글의 종류가 올바르지 않습니다.";
+    public static final String NO_BOARD_TYPE_MESSAGE = "해당 게시판이 존재하지 않습니다.";
+
 
 }

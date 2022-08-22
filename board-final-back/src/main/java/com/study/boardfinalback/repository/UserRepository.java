@@ -74,4 +74,11 @@ public interface UserRepository {
      */
     void banUser(int userSeq);
 
+    /**
+     * 입력받은 userSeq을 가지는 User 차단 해제(userStatus ALLOWED로 변경)
+     *
+     * @param userSeq : 차단 해제 할 User의 userSeq
+     */
+    void unbanUser(int userSeq);
+
 }

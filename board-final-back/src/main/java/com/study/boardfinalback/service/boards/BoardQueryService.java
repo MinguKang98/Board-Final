@@ -1,6 +1,6 @@
 package com.study.boardfinalback.service.boards;
 
-import com.study.boardfinalback.apiDto.boards.BoardWithUserAndCategoryDto;
+import com.study.boardfinalback.dto.boards.BoardWithUserAndCategoryDto;
 import com.study.boardfinalback.domain.criteria.PagingCriteria;
 import com.study.boardfinalback.domain.criteria.SearchCriteria;
 import com.study.boardfinalback.domain.criteria.SearchPagingCriteria;

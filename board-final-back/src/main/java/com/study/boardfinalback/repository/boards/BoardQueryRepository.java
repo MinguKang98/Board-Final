@@ -1,6 +1,6 @@
 package com.study.boardfinalback.repository.boards;
 
-import com.study.boardfinalback.apiDto.boards.BoardWithUserAndCategoryDto;
+import com.study.boardfinalback.dto.boards.BoardWithUserAndCategoryDto;
 import com.study.boardfinalback.domain.criteria.SearchPagingCriteria;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;

@@ -1,6 +1,6 @@
 package com.study.boardfinalback.repository.comments;
 
-import com.study.boardfinalback.apiDto.comments.CommentWithUserDto;
+import com.study.boardfinalback.dto.comments.CommentWithUserDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

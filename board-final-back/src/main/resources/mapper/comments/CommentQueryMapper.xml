@@ -5,7 +5,7 @@
 
     <!--입력받은 board_seq을 가지는 comment의 row와 users를 join하여 return-->
     <select id="getCommentWithUserDtoListByBoardSeq" parameterType="int"
-            resultType="com.study.boardfinalback.apiDto.comments.CommentWithUserDto">
+            resultType="com.study.boardfinalback.dto.comments.CommentWithUserDto">
 
         SELECT
             C.comment_seq,

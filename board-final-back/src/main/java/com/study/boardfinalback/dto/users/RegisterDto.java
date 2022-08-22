@@ -3,12 +3,10 @@ package com.study.boardfinalback.dto.users;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 /**
- * register 페이지에 사용되는 DTO
+ * 회원가입 시 사용되는 DTO
  */
 @Getter
 @Setter
@@ -21,6 +19,7 @@ public class RegisterDto {
     private String id;
 
     @Email
+    @NotBlank(message = "이메일을 입력하세요.")
     private String email;
 
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{4,16}$",

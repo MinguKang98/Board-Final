@@ -77,7 +77,6 @@ public class UserService {
         userRepository.updatePassword(user);
     }
 
-
     /**
      * 입력받은 userSeq 가지는 User 차단(User의 status BANNED로 수정)
      *
@@ -86,6 +85,16 @@ public class UserService {
     public void banUser(int userSeq) {
 
         userRepository.banUser(userSeq);
+    }
+
+    /**
+     * 입력받은 userSeq 가지는 User 차단 해제(User의 status ALLOWED로 수정)
+     *
+     * @param userSeq
+     */
+    public void unbanUser(int userSeq) {
+
+        userRepository.unbanUser(userSeq);
     }
 
     /**

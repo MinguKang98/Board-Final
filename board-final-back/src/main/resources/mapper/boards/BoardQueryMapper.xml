@@ -5,7 +5,7 @@
 
     <!--페이징된 boards(free), users, categories를 join하여 return -->
     <select id="getFreeBoardWithUserAndCategoryDtoListBySearchPagingCriteria" parameterType="SearchPagingCriteria"
-            resultType="com.study.boardfinalback.apiDto.boards.BoardWithUserAndCategoryDto">
+            resultType="com.study.boardfinalback.dto.boards.BoardWithUserAndCategoryDto">
         SELECT
             B.board_seq,
             B.date_created,
@@ -41,7 +41,7 @@
                     )
                 </if>
             </where>
-        ) B
+        ) AS B
         LEFT JOIN users AS U
             ON B.user_seq = U.user_seq
         LEFT JOIN categories AS C
@@ -52,7 +52,7 @@
 
     <!--페이징된 boards(notify), users, categories를 join하여 return -->
     <select id="getNotifyBoardWithUserAndCategoryDtoListBySearchPagingCriteria" parameterType="SearchPagingCriteria"
-            resultType="com.study.boardfinalback.apiDto.boards.BoardWithUserAndCategoryDto">
+            resultType="com.study.boardfinalback.dto.boards.BoardWithUserAndCategoryDto">
         SELECT
             B.board_seq,
             B.date_created,
@@ -84,7 +84,7 @@
                     )
                 </if>
             </where>
-        ) B
+        ) AS B
         LEFT JOIN users AS U
             ON B.user_seq = U.user_seq
         LEFT JOIN categories AS C
@@ -95,7 +95,7 @@
 
     <!--페이징된 boards(member), users, categories를 join하여 return -->
     <select id="getMemberBoardWithUserAndCategoryDtoListBySearchPagingCriteria" parameterType="SearchPagingCriteria"
-            resultType="com.study.boardfinalback.apiDto.boards.BoardWithUserAndCategoryDto">
+            resultType="com.study.boardfinalback.dto.boards.BoardWithUserAndCategoryDto">
         SELECT
             B.board_seq,
             B.date_created,
@@ -131,7 +131,7 @@
                     )
                 </if>
             </where>
-        ) B
+        ) AS B
         LEFT JOIN users AS U
             ON B.user_seq = U.user_seq
         LEFT JOIN categories AS C
@@ -142,7 +142,7 @@
 
     <!--페이징된 boards(news), users, categories를 join하여 return -->
     <select id="getNewsBoardWithUserAndCategoryDtoListBySearchPagingCriteria" parameterType="SearchPagingCriteria"
-            resultType="com.study.boardfinalback.apiDto.boards.BoardWithUserAndCategoryDto">
+            resultType="com.study.boardfinalback.dto.boards.BoardWithUserAndCategoryDto">
         SELECT
             B.board_seq,
             B.date_created,
@@ -178,7 +178,7 @@
                     )
                 </if>
             </where>
-        ) B
+        ) AS B
         LEFT JOIN users AS U
             ON B.user_seq = U.user_seq
         LEFT JOIN categories AS C

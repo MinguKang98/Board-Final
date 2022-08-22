@@ -7,13 +7,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 /**
- * passwordChange 페이지에 사용되는 DTO
+ * 비밀번호 변경 시 사용되는 DTO
  */
 @Getter
 @Setter
 public class PasswordChangeDto {
 
-    @NotBlank
+    @NotBlank(message = "기존 비밀번호를 입력하세요.")
     String originPassword;
 
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{4,16}$",

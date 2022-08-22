@@ -78,4 +78,11 @@
         WHERE user_seq = #{userSeq}
     </update>
 
+    <!--입력받은 userSeq 가지는 row 차단 해제-->
+    <update id="unbanUser" parameterType="int">
+        UPDATE users
+        SET status = "ALLOWED"
+        WHERE user_seq = #{userSeq}
+    </update>
+
 </mapper>

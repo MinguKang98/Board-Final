@@ -1,6 +1,6 @@
 package com.study.boardfinalback.service.comments;
 
-import com.study.boardfinalback.apiDto.comments.CommentWithUserDto;
+import com.study.boardfinalback.dto.comments.CommentWithUserDto;
 import com.study.boardfinalback.repository.comments.CommentQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

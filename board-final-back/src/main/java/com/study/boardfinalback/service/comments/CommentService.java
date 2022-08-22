@@ -45,10 +45,13 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(int commentSeq, int boardSeq) {
+    public void deleteComment(int commentSeq) {
+
+        Comment comment = commentRepository.getCommentBySeq(commentSeq)
+                .orElseThrow(CommentNotFoundException::new);
 
         commentRepository.deleteComment(commentSeq);
-        boardRepository.decreaseCommentCount(boardSeq);
+        boardRepository.decreaseCommentCount(comment.getBoardSeq());
     }
 
 }

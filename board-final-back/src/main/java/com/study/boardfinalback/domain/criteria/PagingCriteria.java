@@ -20,8 +20,8 @@ public class PagingCriteria {
     private int lastPage;
 
     @Builder
-    public PagingCriteria(int curPage, int totalBoardCount) {
-        this.curPage = curPage;
+    public PagingCriteria(Integer curPage, int totalBoardCount) {
+        this.curPage = (curPage == null) ? 1 : curPage;
         this.totalBoardCount = totalBoardCount;
         this.pageSetting();
     }
