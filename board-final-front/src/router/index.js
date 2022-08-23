@@ -1,9 +1,26 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import LoginPage from "@/views/LoginView";
+import LoginPage from "@/views/users/LoginPage";
+import {getTokenFromCookie} from "@/utils/cookie";
 
 Vue.use(VueRouter)
+
+const requireAuth = () => (from, to, next) => {
+    const token = getTokenFromCookie();
+    if (token) {
+        return next()
+    }
+    next('/login')
+}
+
+const requireUnAuth = () => (from, to, next) => {
+    const token = getTokenFromCookie();
+    if (token) {
+        return next('/')
+    }
+    return next()
+};
 
 const routes = [
     {
@@ -22,7 +39,8 @@ const routes = [
     {
         path: '/login',
         name: 'login',
-        component: LoginPage
+        component: LoginPage,
+        beforeEnter : requireUnAuth()
     },
 ]
 

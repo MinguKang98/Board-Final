@@ -1,7 +1,6 @@
 import {instance, instanceWithAuth} from "@/api/index";
 
 function login(loginData) {
-    console.log(loginData);
     return instance.post('/api/login', loginData);
 }
 

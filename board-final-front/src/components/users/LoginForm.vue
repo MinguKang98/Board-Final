@@ -8,40 +8,55 @@
       <label for="password" class="form-label">비밀번호</label>
       <input v-model="password" type="password" class="form-control" placeholder="비밀번호" required>
     </div>
-    <div class="mb-3">
-      <span id="loginError"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">로그인</button>
     <button type="submit" class="btn btn-primary">로그인</button>
   </form>
 </template>
 
 <script>
-import {login} from "@/api/user";
-
 export default {
   name: "LoginForm",
   data() {
     return {
       id: '',
-      password: ''
+      password: '',
     }
   },
   methods: {
     async loginForm() {
       try {
+
         const loginData = {
           id: this.id,
           password: this.password
         };
-        console.log(loginData);
-        const { data } = await login(loginData);
-        console.log(data)
+        await this.$store.dispatch('userStore/login', loginData);
+
+        this.$router.push('/');
+
       } catch (error) {
+
         console.log(error)
-      } finally {
+        const status = error.response.status;
+
+        if (status === 404) {
+          alert("아이디와 비밀번호가 일치하지 않습니다.")
+          this.initPassword();
+        }
+
+        if (status === 403) {
+          alert("차단된 회원입니다.");
+          this.initForm();
+
+        }
 
       }
+    },
+    initForm() {
+      this.id = '';
+      this.password = '';
+    },
+    initPassword() {
+      this.password = '';
     },
   }
 }
