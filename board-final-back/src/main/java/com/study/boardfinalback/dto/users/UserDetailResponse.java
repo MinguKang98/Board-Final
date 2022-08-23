@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-public class UserDetailDto {
+public class UserDetailResponse {
 
     private int userSeq;
     private LocalDateTime dateCreated;
@@ -23,9 +23,9 @@ public class UserDetailDto {
     private String email;
     private UserRole role;
 
-    public static UserDetailDto ofUser(User user) {
+    public static UserDetailResponse ofUser(User user) {
 
-        UserDetailDto userDetailDto = UserDetailDto.builder()
+        UserDetailResponse userDetailResponse = UserDetailResponse.builder()
                 .userSeq(user.getUserSeq())
                 .dateCreated(user.getDateCreated())
                 .name(user.getName())
@@ -34,7 +34,7 @@ public class UserDetailDto {
                 .role(user.getRole())
                 .build();
 
-        return userDetailDto;
+        return userDetailResponse;
     }
 
 }

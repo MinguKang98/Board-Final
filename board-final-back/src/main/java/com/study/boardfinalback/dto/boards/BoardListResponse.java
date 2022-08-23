@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class BoardListDto {
+public class BoardListResponse {
 
     private int totalBoardCount;
     private List<BoardWithUserAndCategoryDto> boardList;

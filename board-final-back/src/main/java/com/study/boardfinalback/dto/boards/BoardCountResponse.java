@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class BoardCountDto {
+public class BoardCountResponse {
 
     private int totalBoardCount;
 

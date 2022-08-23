@@ -15,7 +15,6 @@ import com.study.boardfinalback.utils.JwtUtils;
 import com.study.boardfinalback.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -37,15 +36,15 @@ public class UserRestController {
     /**
      * 입력받은 로그인 정보로 로그인을 시도한다.
      *
-     * @param loginDto : 로그인에 필요한 정보 담긴 DTO
+     * @param loginRequest : 로그인에 필요한 정보 담긴 DTO
      * @return : TokenDto
      */
     @PostMapping("/api/login")
-    public ResponseEntity<TokenDto> login(@Valid LoginDto loginDto) {
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
 
         User loginUser = userService.login(
-                        loginDto.getId(),
-                        EncryptUtils.encryptPassword(loginDto.getPassword()))
+                        loginRequest.getId(),
+                        EncryptUtils.encryptPassword(loginRequest.getPassword()))
                 .orElseThrow(UserNotFoundException::new);
 
         if (loginUser.getStatus() == UserStatus.BANNED) {
@@ -54,35 +53,38 @@ public class UserRestController {
         }
 
         String jwtToken = JwtUtils.makeJwtToken(loginUser);
-        TokenDto token = new TokenDto(jwtToken);
+        TokenResponse tokenResponse = TokenResponse.builder()
+                .token(jwtToken)
+                .userSeq(loginUser.getUserSeq())
+                .build();
 
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(tokenResponse);
     }
 
     /**
      * 입력받은 회원가입 정보로 회원가입을 시도한다.
      *
-     * @param registerDto : 회원가입에 필요한 정보 담긴 DTO
+     * @param registerRequest : 회원가입에 필요한 정보 담긴 DTO
      * @return : void
      */
     @PostMapping("/api/users")
-    public ResponseEntity register(@Valid RegisterDto registerDto) {
+    public ResponseEntity register(@Valid @RequestBody RegisterRequest registerRequest) {
 
-        if (!userService.identifyCheck(registerDto.getId())) {
-            log.info("이미 등록된 회원입니다. id={}", registerDto.getId());
-            throw new DuplicateUserException(Map.of("id", registerDto.getId()));
+        if (!userService.identifyCheck(registerRequest.getId())) {
+            log.info("이미 등록된 회원입니다. id={}", registerRequest.getId());
+            throw new DuplicateUserException(Map.of("id", registerRequest.getId()));
         }
 
-        if (!userService.emailCheck(registerDto.getEmail())) {
-            log.info("이미 등록된 회원입니다. email={}", registerDto.getEmail());
-            throw new DuplicateUserException(Map.of("email", registerDto.getEmail()));
+        if (!userService.emailCheck(registerRequest.getEmail())) {
+            log.info("이미 등록된 회원입니다. email={}", registerRequest.getEmail());
+            throw new DuplicateUserException(Map.of("email", registerRequest.getEmail()));
         }
 
         User user = User.builder()
-                .name(registerDto.getName())
-                .id(registerDto.getId())
-                .email(registerDto.getEmail())
-                .password(EncryptUtils.encryptPassword(registerDto.getPassword()))
+                .name(registerRequest.getName())
+                .id(registerRequest.getId())
+                .email(registerRequest.getEmail())
+                .password(EncryptUtils.encryptPassword(registerRequest.getPassword()))
                 .role(UserRole.ROLE_MEMBER)
                 .status(UserStatus.ALLOWED)
                 .build();
@@ -107,31 +109,31 @@ public class UserRestController {
      * @return : UserDetailDto
      */
     @GetMapping("/api/users/{userSeq}")
-    public ResponseEntity<UserDetailDto> userDetail(@PathVariable("userSeq") int userSeq) {
+    public ResponseEntity<UserDetailResponse> userDetail(@PathVariable("userSeq") int userSeq) {
 
-        UserDetailDto userDetailDto = UserDetailDto.ofUser(userService.getUserBySeq(userSeq));
+        UserDetailResponse userDetailResponse = UserDetailResponse.ofUser(userService.getUserBySeq(userSeq));
 
-        return ResponseEntity.ok(userDetailDto);
+        return ResponseEntity.ok(userDetailResponse);
     }
 
     /**
      * 유효성 검사를 통과하면 입력받은 새 비밀번호로 비밀번호를 변경한다.
      *
-     * @param userSeq           : 비밀번호 변경할 User의 userSeq
-     * @param passwordChangeDto : 비밀번호 변경에 필요한 정보 담긴 DTO
-     * @param currentUser       : 현재 로그인한 유저
+     * @param userSeq               : 비밀번호 변경할 User의 userSeq
+     * @param passwordChangeRequest : 비밀번호 변경에 필요한 정보 담긴 DTO
+     * @param currentUser           : 현재 로그인한 유저
      * @return : void
      */
     @PutMapping("/api/users/{userSeq}")
     public ResponseEntity passwordChange(@PathVariable("userSeq") int userSeq,
-                                         @Valid PasswordChangeDto passwordChangeDto,
+                                         @Valid @RequestBody PasswordChangeRequest passwordChangeRequest,
                                          @CurrentUser User currentUser) {
 
         User originUser = userService.getUserBySeq(userSeq);
         UserUtils.checkAuthorization(currentUser, userSeq);
 
         Map<String, String> passwordChangeDtoValidErrors = UserUtils.passwordChangeDtoValidCheck(
-                passwordChangeDto,
+                passwordChangeRequest,
                 originUser.getPassword());
         if (!passwordChangeDtoValidErrors.isEmpty()) {
             throw new PasswordChangeDtoValidException(passwordChangeDtoValidErrors);
@@ -140,7 +142,7 @@ public class UserRestController {
         User newUser = User.builder()
                 .userSeq(userSeq)
                 .password(
-                        EncryptUtils.encryptPassword(passwordChangeDto.getNewPassword())
+                        EncryptUtils.encryptPassword(passwordChangeRequest.getNewPassword())
                 )
                 .build();
 
@@ -173,15 +175,15 @@ public class UserRestController {
     /**
      * 입력한 id의 중복여부를 확인한다.
      *
-     * @param id : 중복여부를 확인 할 id
+     * @param idRequest : 중복여부를 확인 할 id
      * @return : void
      */
     @PostMapping("/api/users/id")
-    public ResponseEntity identifyCheck(@RequestParam(value = "id") String id) {
-        boolean identifyCheck = userService.identifyCheck(id);
+    public ResponseEntity identifyCheck(@Valid @RequestBody IdRequest idRequest) {
+        boolean identifyCheck = userService.identifyCheck(idRequest.getId());
 
         if (!identifyCheck) {
-            throw new DuplicateUserException(Map.of("id", id));
+            throw new DuplicateUserException(Map.of("id", idRequest.getId()));
         }
 
         return ResponseEntity.noContent().build();
@@ -190,15 +192,15 @@ public class UserRestController {
     /**
      * 입력한 email의 중복여부를 확인한다.
      *
-     * @param email : 중복여부를 확인 할 email
+     * @param emailRequest : 중복여부를 확인 할 email
      * @return : void
      */
     @PostMapping("/api/users/email")
-    public ResponseEntity emailCheck(@RequestParam(value = "email") String email) {
-        boolean emailCheck = userService.emailCheck(email);
+    public ResponseEntity emailCheck(@Valid @RequestBody EmailRequest emailRequest) {
+        boolean emailCheck = userService.emailCheck(emailRequest.getEmail());
 
         if (!emailCheck) {
-            throw new DuplicateUserException(Map.of("email", email));
+            throw new DuplicateUserException(Map.of("email", emailRequest.getEmail()));
         }
 
         return ResponseEntity.noContent().build();
@@ -219,7 +221,7 @@ public class UserRestController {
 
     @PutMapping("/api/users/{userSeq}/unban")
     public ResponseEntity unbanUser(@PathVariable("userSeq") int userSeq,
-                                  @CurrentUser User currentUser) {
+                                    @CurrentUser User currentUser) {
 
         if (currentUser.getRole() != UserRole.ROLE_ADMIN) {
             throw new AuthorizationException();

@@ -11,17 +11,19 @@ import javax.validation.constraints.Pattern;
  */
 @Getter
 @Setter
-public class PasswordChangeDto {
+public class PasswordChangeRequest {
 
     @NotBlank(message = "기존 비밀번호를 입력하세요.")
     String originPassword;
 
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{4,16}$",
             message ="새 비밀번호는 4글자 이상 16글자 이하의 영문, 숫자, 특수문자의 조합이여야 합니다.")
+    @NotBlank(message = "새 비밀번호를 입력하세요")
     String newPassword;
 
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{4,16}$",
             message ="새 비밀번호 확인은 4글자 이상 16글자 이하의 영문, 숫자, 특수문자의 조합이여야 합니다.")
+    @NotBlank(message = "새 비밀번호 확인을 입력하세요")
     String newPasswordCheck;
 
 }
