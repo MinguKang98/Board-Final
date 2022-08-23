@@ -63,7 +63,7 @@ public class BoardRestController {
      * @return : BoardListDto
      */
     @GetMapping("/api/boards/free")
-    public ResponseEntity<BoardListDto> freeBoard(SearchCriteria searchCriteria) {
+    public ResponseEntity<BoardListResponse> freeBoard(SearchCriteria searchCriteria) {
 
         int totalBoardCount = boardService.getTotalFreeBoardCountBySearchCriteria(searchCriteria);
         PagingCriteria pagingCriteria = PagingCriteria.builder()
@@ -74,11 +74,11 @@ public class BoardRestController {
         List<BoardWithUserAndCategoryDto> boardWithUserAndCategoryDtoList = boardQueryService
                 .getFreeBoardWithUserAndCategoryDtoListBySearchPagingCriteria(searchCriteria, pagingCriteria);
 
-        BoardListDto boardListDto = BoardListDto.builder()
+        BoardListResponse boardListResponse = BoardListResponse.builder()
                 .totalBoardCount(totalBoardCount)
                 .boardList(boardWithUserAndCategoryDtoList)
                 .build();
-        return ResponseEntity.ok(boardListDto);
+        return ResponseEntity.ok(boardListResponse);
     }
 
     /**
@@ -88,7 +88,7 @@ public class BoardRestController {
      * @return : BoardListDto
      */
     @GetMapping("/api/boards/notify")
-    public ResponseEntity<BoardListDto> notifyBoard(SearchCriteria searchCriteria) {
+    public ResponseEntity<BoardListResponse> notifyBoard(SearchCriteria searchCriteria) {
 
         int totalBoardCount = boardService.getTotalNotifyBoardCountBySearchCriteria(searchCriteria);
         PagingCriteria pagingCriteria = PagingCriteria.builder()
@@ -99,11 +99,11 @@ public class BoardRestController {
         List<BoardWithUserAndCategoryDto> boardWithUserAndCategoryDtoList = boardQueryService
                 .getNotifyBoardWithUserAndCategoryDtoListBySearchPagingCriteria(searchCriteria, pagingCriteria);
 
-        BoardListDto boardListDto = BoardListDto.builder()
+        BoardListResponse boardListResponse = BoardListResponse.builder()
                 .totalBoardCount(totalBoardCount)
                 .boardList(boardWithUserAndCategoryDtoList)
                 .build();
-        return ResponseEntity.ok(boardListDto);
+        return ResponseEntity.ok(boardListResponse);
     }
 
     /**
@@ -113,7 +113,7 @@ public class BoardRestController {
      * @return : BoardListDto
      */
     @GetMapping("/api/boards/member")
-    public ResponseEntity<BoardListDto> memberBoard(SearchCriteria searchCriteria) {
+    public ResponseEntity<BoardListResponse> memberBoard(SearchCriteria searchCriteria) {
 
         int totalBoardCount = boardService.getTotalMemberBoardCountBySearchCriteria(searchCriteria);
         PagingCriteria pagingCriteria = PagingCriteria.builder()
@@ -124,11 +124,11 @@ public class BoardRestController {
         List<BoardWithUserAndCategoryDto> boardWithUserAndCategoryDtoList = boardQueryService
                 .getMemberBoardWithUserAndCategoryDtoListBySearchPagingCriteria(searchCriteria, pagingCriteria);
 
-        BoardListDto boardListDto = BoardListDto.builder()
+        BoardListResponse boardListResponse = BoardListResponse.builder()
                 .totalBoardCount(totalBoardCount)
                 .boardList(boardWithUserAndCategoryDtoList)
                 .build();
-        return ResponseEntity.ok(boardListDto);
+        return ResponseEntity.ok(boardListResponse);
     }
 
     /**
@@ -138,7 +138,7 @@ public class BoardRestController {
      * @return : BoardListDto
      */
     @GetMapping("/api/boards/news")
-    public ResponseEntity<BoardListDto> newsBoard(SearchCriteria searchCriteria) {
+    public ResponseEntity<BoardListResponse> newsBoard(SearchCriteria searchCriteria) {
 
         int totalBoardCount = boardService.getTotalNewsBoardCountBySearchCriteria(searchCriteria);
         PagingCriteria pagingCriteria = PagingCriteria.builder()
@@ -149,11 +149,11 @@ public class BoardRestController {
         List<BoardWithUserAndCategoryDto> boardWithUserAndCategoryDtoList = boardQueryService
                 .getNewsBoardWithUserAndCategoryDtoListBySearchPagingCriteria(searchCriteria, pagingCriteria);
 
-        BoardListDto boardListDto = BoardListDto.builder()
+        BoardListResponse boardListResponse = BoardListResponse.builder()
                 .totalBoardCount(totalBoardCount)
                 .boardList(boardWithUserAndCategoryDtoList)
                 .build();
-        return ResponseEntity.ok(boardListDto);
+        return ResponseEntity.ok(boardListResponse);
     }
 
     /**
@@ -161,27 +161,27 @@ public class BoardRestController {
      *
      * @param boardType     : 게시글 종류
      * @param currentUser   : 현재 로그인한 유저
-     * @param boardWriteDto : 게시글 등록 정보 담긴 DTO
+     * @param boardWriteRequest : 게시글 등록 정보 담긴 DTO
      * @return : void
      * @throws IOException
      */
     @PostMapping("/api/boards/{type}")
     public ResponseEntity write(@PathVariable("type") BoardType boardType,
                                 @CurrentUser User currentUser,
-                                @Valid BoardWriteDto boardWriteDto) throws IOException {
+                                @Valid BoardWriteRequest boardWriteRequest) throws IOException {
 
         Board board = Board.builder()
-                .title(boardWriteDto.getTitle())
-                .content(boardWriteDto.getContent())
-                .fileExist(boardWriteDto.isFileExist())
+                .title(boardWriteRequest.getTitle())
+                .content(boardWriteRequest.getContent())
+                .fileExist(boardWriteRequest.isFileExist())
                 .boardType(boardType)
                 .userSeq(currentUser.getUserSeq())
                 .categorySeq(
-                        (boardType == BoardType.NOTIFY || boardType == BoardType.NEWS) ? 1 : boardWriteDto.getCategorySeq()
+                        (boardType == BoardType.NOTIFY || boardType == BoardType.NEWS) ? 1 : boardWriteRequest.getCategorySeq()
                 )
                 .build();
 
-        List<File> addFileList = fileUtils.getAddFileList(boardWriteDto.getFiles());
+        List<File> addFileList = fileUtils.getAddFileList(boardWriteRequest.getFiles());
 
         int boardSeq = boardService.addBoard(board, addFileList);
         log.info("게시글이 생성되었습니다. boardSeq={}", boardSeq);
@@ -271,7 +271,7 @@ public class BoardRestController {
      * @param boardType      : 게시글 종류
      * @param boardSeq       : 수정할 게시글의 boardSeq
      * @param currentUser    : 현재 사용자
-     * @param boardModifyDto : 게시글 수정 정보 담긴 DTO
+     * @param boardModifyRequest : 게시글 수정 정보 담긴 DTO
      * @return : void
      * @throws IOException
      */
@@ -279,7 +279,7 @@ public class BoardRestController {
     public ResponseEntity modify(@PathVariable("type") BoardType boardType,
                                  @PathVariable("boardSeq") int boardSeq,
                                  @CurrentUser User currentUser,
-                                 @Valid BoardModifyDto boardModifyDto) throws IOException {
+                                 @Valid BoardModifyRequest boardModifyRequest) throws IOException {
 
         Board originBoard = boardService.getBoardBySeq(boardSeq);
         if (originBoard.getBoardType() != boardType) {
@@ -289,12 +289,12 @@ public class BoardRestController {
 
         Board newBoard = Board.builder()
                 .boardSeq(boardSeq)
-                .title(boardModifyDto.getTitle())
-                .content(boardModifyDto.getContent())
+                .title(boardModifyRequest.getTitle())
+                .content(boardModifyRequest.getContent())
                 .build();
 
-        List<File> addFileList = fileUtils.getAddFileList(boardModifyDto.getFiles(), boardSeq);
-        List<File> deleteFileList = boardModifyDto.getDeleteFiles().stream()
+        List<File> addFileList = fileUtils.getAddFileList(boardModifyRequest.getAddFiles(), boardSeq);
+        List<File> deleteFileList = boardModifyRequest.getDeleteFiles().stream()
                 .map(f -> fileService.getFileBySeq(f))
                 .collect(Collectors.toList());
 
@@ -336,14 +336,14 @@ public class BoardRestController {
      * @return : BoardCountDto
      */
     @GetMapping("/api/boards/free/count")
-    public ResponseEntity<BoardCountDto> freeBoardCount(SearchCriteria searchCriteria) {
+    public ResponseEntity<BoardCountResponse> freeBoardCount(SearchCriteria searchCriteria) {
 
         int totalBoardCount = boardService.getTotalFreeBoardCountBySearchCriteria(searchCriteria);
-        BoardCountDto boardCountDto = BoardCountDto.builder()
+        BoardCountResponse boardCountResponse = BoardCountResponse.builder()
                 .totalBoardCount(totalBoardCount)
                 .build();
 
-        return ResponseEntity.ok(boardCountDto);
+        return ResponseEntity.ok(boardCountResponse);
     }
 
     /**
@@ -353,14 +353,14 @@ public class BoardRestController {
      * @return : BoardCountDto
      */
     @GetMapping("/api/boards/notify/count")
-    public ResponseEntity<BoardCountDto> notifyBoardCount(SearchCriteria searchCriteria) {
+    public ResponseEntity<BoardCountResponse> notifyBoardCount(SearchCriteria searchCriteria) {
 
         int totalBoardCount = boardService.getTotalNotifyBoardCountBySearchCriteria(searchCriteria);
-        BoardCountDto boardCountDto = BoardCountDto.builder()
+        BoardCountResponse boardCountResponse = BoardCountResponse.builder()
                 .totalBoardCount(totalBoardCount)
                 .build();
 
-        return ResponseEntity.ok(boardCountDto);
+        return ResponseEntity.ok(boardCountResponse);
     }
 
     /**
@@ -370,14 +370,14 @@ public class BoardRestController {
      * @return : BoardCountDto
      */
     @GetMapping("/api/boards/member/count")
-    public ResponseEntity<BoardCountDto> memberBoardCount(SearchCriteria searchCriteria) {
+    public ResponseEntity<BoardCountResponse> memberBoardCount(SearchCriteria searchCriteria) {
 
         int totalBoardCount = boardService.getTotalMemberBoardCountBySearchCriteria(searchCriteria);
-        BoardCountDto boardCountDto = BoardCountDto.builder()
+        BoardCountResponse boardCountResponse = BoardCountResponse.builder()
                 .totalBoardCount(totalBoardCount)
                 .build();
 
-        return ResponseEntity.ok(boardCountDto);
+        return ResponseEntity.ok(boardCountResponse);
     }
 
     /**
@@ -387,14 +387,14 @@ public class BoardRestController {
      * @return : BoardCountDto
      */
     @GetMapping("/api/boards/news/count")
-    public ResponseEntity<BoardCountDto> newsBoardCount(SearchCriteria searchCriteria) {
+    public ResponseEntity<BoardCountResponse> newsBoardCount(SearchCriteria searchCriteria) {
 
         int totalBoardCount = boardService.getTotalNewsBoardCountBySearchCriteria(searchCriteria);
-        BoardCountDto boardCountDto = BoardCountDto.builder()
+        BoardCountResponse boardCountResponse = BoardCountResponse.builder()
                 .totalBoardCount(totalBoardCount)
                 .build();
 
-        return ResponseEntity.ok(boardCountDto);
+        return ResponseEntity.ok(boardCountResponse);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.study.boardfinalback.dto.users;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,13 +9,16 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class TokenDto {
+public class TokenResponse {
 
     private String grantType = "Bearer";
     private String token;
+    private int userSeq;
 
-    public TokenDto(String token) {
+    @Builder
+    public TokenResponse(String token, int userSeq) {
         this.token = token;
+        this.userSeq = userSeq;
     }
 
 }

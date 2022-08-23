@@ -4,18 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
-/**
- * 로그인 시 사용되는 DTO
- */
 @Getter
 @Setter
-public class LoginDto {
+public class IdRequest {
 
+    @Size(min = 3, max = 10, message = "아이디는 3글자에서 10글자 사이여야 합니다.")
     @NotBlank(message = "아이디를 입력하세요")
-    String id;
-
-    @NotBlank(message = "비밀번호를 입력하세요")
-    String password;
+    private String id;
 
 }

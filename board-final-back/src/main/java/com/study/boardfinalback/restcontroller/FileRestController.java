@@ -1,6 +1,6 @@
 package com.study.boardfinalback.restcontroller;
 
-import com.study.boardfinalback.dto.files.FileDetailDto;
+import com.study.boardfinalback.dto.files.FileDetailResponse;
 import com.study.boardfinalback.domain.File;
 import com.study.boardfinalback.service.boards.BoardService;
 import com.study.boardfinalback.service.FileService;
@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,16 +39,16 @@ public class FileRestController {
      * @return : FileDetailDto List
      */
     @GetMapping("/api/boards/{boardSeq}/files")
-    public ResponseEntity<List<FileDetailDto>> files(@PathVariable("boardSeq") int boardSeq) {
+    public ResponseEntity<List<FileDetailResponse>> files(@PathVariable("boardSeq") int boardSeq) {
 
         boardService.getBoardBySeq(boardSeq);
 
-        List<FileDetailDto> fileDetailDtoList = fileService.getFileListByBoardSeq(boardSeq)
+        List<FileDetailResponse> fileDetailResponseList = fileService.getFileListByBoardSeq(boardSeq)
                 .stream()
-                .map(f -> new FileDetailDto(f))
+                .map(f -> new FileDetailResponse(f))
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(fileDetailDtoList);
+        return ResponseEntity.ok(fileDetailResponseList);
     }
 
     /**

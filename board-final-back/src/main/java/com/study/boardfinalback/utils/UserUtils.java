@@ -1,6 +1,6 @@
 package com.study.boardfinalback.utils;
 
-import com.study.boardfinalback.dto.users.PasswordChangeDto;
+import com.study.boardfinalback.dto.users.PasswordChangeRequest;
 import com.study.boardfinalback.domain.users.User;
 import com.study.boardfinalback.domain.users.UserRole;
 import com.study.boardfinalback.error.users.AuthorizationException;
@@ -35,28 +35,28 @@ public class UserUtils {
     /**
      * posswordChangeDto를 확인하여 에러가 있다면 에러 메세지가 담긴 HashMap을 return. 에러가 없다면 빈 HashMap을 return
      *
-     * @param passwordChangeDto : 패스워드 변경 사항 담긴 DTO
+     * @param passwordChangeRequest : 패스워드 변경 사항 담긴 DTO
      * @param originPassword : 기존 패스워드
      * @return : 에러가 없다면 빈 HashMap, 에러가 있다면 에러 메시지가 담긴 HashMap
      */
     public static Map<String, String> passwordChangeDtoValidCheck(
-            PasswordChangeDto passwordChangeDto,
+            PasswordChangeRequest passwordChangeRequest,
             String originPassword) {
 
         Map<String, String> map = new HashMap<>();
 
-        if (passwordChangeDto.getOriginPassword().equals(passwordChangeDto.getNewPassword())) {
+        if (passwordChangeRequest.getOriginPassword().equals(passwordChangeRequest.getNewPassword())) {
             log.info("비밀번호 변경 형식 에러 : 새 비밀번호가 기존 비밀번호와 일치합니다.");
             map.put("new password error", "새 비밀번호가 기존 비밀번호와 일치합니다.");
         }
 
-        if (!passwordChangeDto.getNewPassword().equals(passwordChangeDto.getNewPasswordCheck())) {
+        if (!passwordChangeRequest.getNewPassword().equals(passwordChangeRequest.getNewPasswordCheck())) {
             log.info("비밀번호 변경 형식 에러 : 새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.");
             map.put("new password check error", "새 비밀번호와 새 비밀번호 확인이 일치하지 않습니다.");
         }
 
         if (!originPassword.equals(
-                EncryptUtils.encryptPassword(passwordChangeDto.getOriginPassword()
+                EncryptUtils.encryptPassword(passwordChangeRequest.getOriginPassword()
                 ))) {
             log.info("비밀번호 변경 형식 에러 : 기존 비밀번호가 일치하지 않습니다.");
             map.put("origin password error", "기존 비밀번호가 일치하지 않습니다.");

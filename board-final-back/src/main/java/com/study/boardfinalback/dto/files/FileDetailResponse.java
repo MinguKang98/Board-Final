@@ -9,12 +9,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class FileDetailDto {
+public class FileDetailResponse {
 
     private int fileSeq;
     private String originName;
 
-    public FileDetailDto(File file) {
+    public FileDetailResponse(File file) {
         this.fileSeq = file.getFileSeq();
         this.originName = file.getOriginName();
     }
