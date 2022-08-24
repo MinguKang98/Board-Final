@@ -5,6 +5,7 @@ import LoginPage from "@/views/users/LoginPage";
 import {getTokenFromCookie} from "@/utils/cookie";
 import UserDetailPage from "@/views/users/UserDetailPage";
 import NotFound from "@/views/NotFound";
+import RegisterPage from "@/views/users/RegisterPage";
 
 Vue.use(VueRouter)
 
@@ -48,6 +49,12 @@ const routes = [
         path: '/user/:userSeq',
         name: 'userDetail',
         component: UserDetailPage,
+    },
+    {
+        path: '/register',
+        name: 'register',
+        component: RegisterPage,
+        beforeEnter : requireUnAuth()
     },
     {
         path: '*',
