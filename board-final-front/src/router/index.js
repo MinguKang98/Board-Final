@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginPage from "@/views/users/LoginPage";
 import {getTokenFromCookie} from "@/utils/cookie";
+import UserDetailPage from "@/views/users/UserDetailPage";
+import NotFound from "@/views/NotFound";
 
 Vue.use(VueRouter)
 
@@ -42,6 +44,19 @@ const routes = [
         component: LoginPage,
         beforeEnter : requireUnAuth()
     },
+    {
+        path: '/user/:userSeq',
+        name: 'userDetail',
+        component: UserDetailPage,
+    },
+    {
+        path: '*',
+        redirect: '/404',
+    },
+    {
+        path: '/404',
+        component: NotFound,
+    }
 ]
 
 const router = new VueRouter({
