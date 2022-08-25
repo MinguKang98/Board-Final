@@ -3,7 +3,7 @@ import store from "@/store";
 export function setInterseptors(instance) {
     instance.interceptors.request.use(
         function (config) {
-            const token = store.getters.getToken;
+            const token = store.getters["userStore/getToken"];
             config.headers.Authorization = `Bearer ${token}`;
             return config;
         },

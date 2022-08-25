@@ -4,7 +4,7 @@
       <RouterLink to="/">HOME</RouterLink>
       <template v-if="isLogin">
         <RouterLink :to="`/user/${getUserSeq}`">{{getUserId}}</RouterLink>
-        <RouterLink to="/user/modify">설정</RouterLink>
+        <RouterLink to="/modify">설정</RouterLink>
         <a @click="logout">로그아웃</a>
       </template>
       <template v-else>

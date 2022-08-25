@@ -6,6 +6,8 @@ import {getTokenFromCookie} from "@/utils/cookie";
 import UserDetailPage from "@/views/users/UserDetailPage";
 import NotFound from "@/views/NotFound";
 import RegisterPage from "@/views/users/RegisterPage";
+import UserModifyPage from "@/views/users/UserModifyPage";
+import UserDeletePage from "@/views/users/UserDeletePage";
 
 Vue.use(VueRouter)
 
@@ -55,6 +57,18 @@ const routes = [
         name: 'register',
         component: RegisterPage,
         beforeEnter : requireUnAuth()
+    },
+    {
+        path: '/modify',
+        name: 'userModify',
+        component: UserModifyPage,
+        beforeEnter : requireAuth()
+    },
+    {
+        path: '/delete',
+        name: 'userDelete',
+        component: UserDeletePage,
+        beforeEnter : requireAuth()
     },
     {
         path: '*',
