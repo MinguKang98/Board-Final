@@ -12,6 +12,12 @@
         <RouterLink to="/register">회원 가입</RouterLink>
       </template>
     </div>
+    <div>
+      <RouterLink to="/board/notify" >공지사항</RouterLink>
+      <RouterLink to="/board/free">자유게시판</RouterLink>
+      <RouterLink to="/board/member">회원게시판</RouterLink>
+      <RouterLink to="/board/news">뉴스게시판</RouterLink>
+    </div>
   </nav>
 </template>
 
@@ -26,6 +32,7 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch('userStore/logout');
+      this.$router.go();
     },
   }
 }

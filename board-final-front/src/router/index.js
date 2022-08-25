@@ -8,6 +8,7 @@ import NotFound from "@/views/NotFound";
 import RegisterPage from "@/views/users/RegisterPage";
 import UserModifyPage from "@/views/users/UserModifyPage";
 import UserDeletePage from "@/views/users/UserDeletePage";
+import NotifyBoards from "@/views/boards/NotifyBoards";
 
 Vue.use(VueRouter)
 
@@ -61,6 +62,11 @@ const routes = [
         name: 'userDelete',
         component: UserDeletePage,
         beforeEnter : requireAuth()
+    },
+    {
+        path: '/board/notify',
+        name: 'notifyBoard',
+        component: NotifyBoards,
     },
     {
         path: '*',

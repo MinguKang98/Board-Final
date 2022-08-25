@@ -26,6 +26,9 @@ const userStore = {
                 return (state.userSeq === userSeq) || (state.userRole === 'ROLE_ADMIN');
             }
         },
+        isAdmin(state) {
+            return state.userRole === 'ROLE_ADMIN';
+        },
         getToken(state) {
             return state.token;
         },

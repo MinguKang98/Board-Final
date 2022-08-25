@@ -1,19 +1,19 @@
 import {instance, instanceWithAuth} from "@/api/index";
 
-function getNotifyBoardList(params) {
-    return instance.get('/api/boards/notify', params);
+function getNotifyBoardList(search) {
+    return instance.get('/api/boards/notify', {params: search});
 }
 
-function getFreeBoardList(params) {
-    return instance.get('/api/boards/free', params);
+function getFreeBoardList(search) {
+    return instance.get('/api/boards/free', {params: search});
 }
 
-function getMemberBoardList(params) {
-    return instance.get('/api/boards/member', params);
+function getMemberBoardList(search) {
+    return instance.get('/api/boards/member', {params: search});
 }
 
-function getNewsBoardList(params) {
-    return instance.get('/api/boards/news', params);
+function getNewsBoardList(search) {
+    return instance.get('/api/boards/news', {params: search});
 }
 
 function getNotifyBoard(boardSeq) {
