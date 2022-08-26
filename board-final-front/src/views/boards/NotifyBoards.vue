@@ -4,10 +4,10 @@
     <div class="row">
       <label>총 {{totalBoardCount}}건</label>
     </div>
-    <BoardList :board-list="boardList" :url="'/board/notify'" :search="axiosParams"></BoardList>
+    <BoardList :board-list="boardList" :url="'/board/notify'" :search="searchParams"></BoardList>
     <PagingBar :cur-page="curPage" :total-board-count="totalBoardCount" @pagingEvent="paging"></PagingBar>
     <div v-if="isAdmin">
-      <RouterLink to="/write" tag="button" class="btn btn-primary btn-lg" style="float:right">
+      <RouterLink :to="`/notify/write?${searchParams}`" tag="button" class="btn btn-primary btn-lg" style="float:right">
         등록
       </RouterLink>
     </div>
@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     ...mapGetters('userStore',["isAdmin"]),
-    axiosParams() {
+    searchParams() {
       const params = new URLSearchParams();
       params.append('dateCreatedFrom', this.dateCreatedFrom);
       params.append('dateCreatedTo', this.dateCreatedTo);
@@ -46,7 +46,7 @@ export default {
     }
   },
   watch: {
-    axiosParams() {
+    searchParams() {
       this.getBoardList();
       this.$router.push({
         path: '/board/notify', query: {
@@ -61,7 +61,7 @@ export default {
     async getBoardList() {
 
       try {
-        const boardResponse = await getNotifyBoardList(this.axiosParams);
+        const boardResponse = await getNotifyBoardList(this.searchParams);
         this.boardList = boardResponse.data.boardList;
         this.totalBoardCount = boardResponse.data.totalBoardCount;
       } catch (error) {

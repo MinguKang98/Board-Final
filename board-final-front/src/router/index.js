@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomePage from '../views/HomePage.vue'
 import LoginPage from "@/views/users/LoginPage";
-import {getTokenFromCookie} from "@/utils/cookie";
+import {getTokenFromCookie, getUserRoleFromCookie} from "@/utils/cookie";
 import UserDetailPage from "@/views/users/UserDetailPage";
 import NotFound from "@/views/NotFound";
 import RegisterPage from "@/views/users/RegisterPage";
@@ -10,6 +10,7 @@ import UserModifyPage from "@/views/users/UserModifyPage";
 import UserDeletePage from "@/views/users/UserDeletePage";
 import NotifyBoards from "@/views/boards/NotifyBoards";
 import NotifyBoardPage from "@/views/boards/NotifyBoardPage";
+import NotifyBoardWritePage from "@/views/boards/NotifyBoardWritePage";
 
 Vue.use(VueRouter)
 
@@ -29,6 +30,14 @@ const requireUnAuth = () => (from, to, next) => {
     return next()
 };
 
+const requireAdmin = () => (from, to, next) => {
+    const token = getUserRoleFromCookie();
+    if (token === 'ROLE_ADMIN') {
+        return next()
+    }
+    return next('/')
+};
+
 const routes = [
     {
         path: '/',
@@ -39,7 +48,7 @@ const routes = [
         path: '/login',
         name: 'login',
         component: LoginPage,
-        beforeEnter : requireUnAuth()
+        beforeEnter: requireUnAuth()
     },
     {
         path: '/user/:userSeq',
@@ -50,19 +59,19 @@ const routes = [
         path: '/register',
         name: 'register',
         component: RegisterPage,
-        beforeEnter : requireUnAuth()
+        beforeEnter: requireUnAuth()
     },
     {
         path: '/modify',
         name: 'userModify',
         component: UserModifyPage,
-        beforeEnter : requireAuth()
+        beforeEnter: requireAuth()
     },
     {
         path: '/delete',
         name: 'userDelete',
         component: UserDeletePage,
-        beforeEnter : requireAuth()
+        beforeEnter: requireAuth()
     },
     {
         path: '/board/notify',
@@ -73,6 +82,12 @@ const routes = [
         path: '/board/notify/:boardSeq',
         name: 'notifyBoardPage',
         component: NotifyBoardPage,
+    },
+    {
+        path: '/notify/write',
+        name: 'notifyBoardWrite',
+        component: NotifyBoardWritePage,
+        beforeEnter: requireAdmin()
     },
     {
         path: '*',
