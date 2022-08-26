@@ -23,7 +23,7 @@ const userStore = {
         },
         isAuthorized(state) {
             return (userSeq) => {
-                return (state.userSeq === userSeq) || (state.userRole === 'ROLE_ADMIN');
+                return (state.userSeq == userSeq) || (state.userRole === 'ROLE_ADMIN');
             }
         },
         isAdmin(state) {

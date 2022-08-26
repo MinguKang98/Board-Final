@@ -9,6 +9,7 @@ import RegisterPage from "@/views/users/RegisterPage";
 import UserModifyPage from "@/views/users/UserModifyPage";
 import UserDeletePage from "@/views/users/UserDeletePage";
 import NotifyBoards from "@/views/boards/NotifyBoards";
+import NotifyBoardPage from "@/views/boards/NotifyBoardPage";
 
 Vue.use(VueRouter)
 
@@ -67,6 +68,11 @@ const routes = [
         path: '/board/notify',
         name: 'notifyBoard',
         component: NotifyBoards,
+    },
+    {
+        path: '/board/notify/:boardSeq',
+        name: 'notifyBoardPage',
+        component: NotifyBoardPage,
     },
     {
         path: '*',
