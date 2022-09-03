@@ -1,34 +1,27 @@
 <template>
   <div class="container">
-    <SimpleBoard :title="'공지사항'" :url="'/board/notify'" :board-list="notifyBoardList"></SimpleBoard>
-    <SimpleBoard :title="'자유게시판'" :url="'/board/free'" :board-list="freeBoardList"></SimpleBoard>
-    <SimpleBoard :title="'회원게시판'" :url="'/board/member'" :board-list="memberBoardList"></SimpleBoard>
-    <SimpleBoard :title="'뉴스'" :url="'/board/news'" :board-list="newsBoardList"></SimpleBoard>
+    <SimpleBoard :board-type="'notify'" :call-board-list="getNotifyBoards"></SimpleBoard>
+    <SimpleBoard :board-type="'free'" :call-board-list="getFreeBoards"></SimpleBoard>
+    <SimpleBoard :board-type="'member'" :call-board-list="getMemberBoards"></SimpleBoard>
+    <SimpleBoard :board-type="'news'" :call-board-list="getNewsBoards"></SimpleBoard>
   </div>
 </template>
 
 <script>
 import SimpleBoard from "@/components/home/SimpleBoard";
 import {getFreeBoardList, getMemberBoardList, getNewsBoardList, getNotifyBoardList} from "@/api/board";
+
 export default {
   name: 'HomePage',
   components: {
     SimpleBoard
-  },
-  data() {
-    return {
-      notifyBoardList: Array,
-      freeBoardList: Array,
-      memberBoardList: Array,
-      newsBoardList: Array,
-    }
   },
   methods: {
     async getNotifyBoards() {
       try {
         const notifyBoardResponse = await getNotifyBoardList();
 
-        this.notifyBoardList = notifyBoardResponse.data.boardList;
+        return  notifyBoardResponse.data.boardList;
       } catch (error) {
         console.log(error);
       }
@@ -37,7 +30,7 @@ export default {
       try {
         const freeBoardResponse = await getFreeBoardList();
 
-        this.freeBoardList = freeBoardResponse.data.boardList;
+        return freeBoardResponse.data.boardList;
       } catch (error) {
         console.log(error);
       }
@@ -46,7 +39,7 @@ export default {
       try {
         const memberBoardResponse = await getMemberBoardList();
 
-        this.memberBoardList = memberBoardResponse.data.boardList;
+        return  memberBoardResponse.data.boardList;
       } catch (error) {
         console.log(error);
       }
@@ -55,21 +48,11 @@ export default {
       try {
         const newsBoardResponse = await getNewsBoardList();
 
-        this.newsBoardList = newsBoardResponse.data.boardList;
+        return  newsBoardResponse.data.boardList;
       } catch (error) {
         console.log(error);
       }
     },
-    getBoards() {
-      this.getNotifyBoards();
-      this.getFreeBoards();
-      this.getMemberBoards();
-      this.getNewsBoards();
-    },
   },
-  mounted() {
-    this.getBoards();
-  }
-
 }
 </script>

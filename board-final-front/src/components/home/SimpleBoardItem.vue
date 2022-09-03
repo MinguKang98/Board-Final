@@ -20,7 +20,28 @@
 <script>
 export default {
   name: "SimpleBoardItem",
-  props: ['board', 'url']
+  props: {
+    board : {
+      type: Object,
+      default: () => ({
+        boardSeq: 0,
+        categoryName: 'NONE',
+        categorySeq: 1,
+        commentCount: 0,
+        dateCreated: '1970-01-01',
+        dateUpdated: '1970-01-01',
+        fileExist: false,
+        title: 'NONE',
+        userId: 'NONE',
+        userSeq: 0,
+        visitCount: 0,
+      })
+    },
+    url : {
+      type: String,
+      default: ''
+    }
+  }
 }
 </script>
 
