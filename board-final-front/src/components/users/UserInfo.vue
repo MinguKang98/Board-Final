@@ -14,10 +14,20 @@ import {getUser} from "@/api/user";
 
 export default {
   name: "UserInfo",
-  props: ['userSeq'],
+  props: {
+    userSeq: {
+      type: Number,
+      required: true
+    }
+  },
   data() {
     return {
-      user: {},
+      user: {
+        id: "NONE",
+        name: "NONE",
+        email: "NONE",
+        role: "ROLE_MEMBER"
+      },
     };
   },
   watch: {
