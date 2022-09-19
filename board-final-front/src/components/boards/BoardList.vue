@@ -2,6 +2,7 @@
   <table class="table">
     <thead class="table-light">
     <tr>
+      <th v-if="isCategory">카테고리</th>
       <th></th>
       <th>제목</th>
       <th>작성자</th>
@@ -11,18 +12,36 @@
     </tr>
     </thead>
     <tbody>
-      <BoardItem v-for="(board, index) in boardList"
-                 :key="index" :board="board" :url="url" :search="search"></BoardItem>
+    <BoardItem v-for="(board, index) in boardList" :key="index" :board="board"
+               :type="type" :search="search" :is-category="isCategory"></BoardItem>
     </tbody>
   </table>
 </template>
 
 <script>
 import BoardItem from "@/components/boards/BoardItem";
+
 export default {
   name: "BoardList",
   components: {BoardItem},
-  props: ['boardList','url','search'],
+  props: {
+    boardList: {
+      type: Array[10],
+      default: []
+    },
+    type: {
+      type: String,
+      default: ''
+    },
+    search: {
+      type: URLSearchParams,
+    }
+  },
+  computed: {
+    isCategory() {
+      return (this.type === 'free') || (this.type === 'member');
+    },
+  }
 }
 </script>
 

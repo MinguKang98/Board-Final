@@ -14,7 +14,7 @@ export default {
   },
   computed: {
     userSeq() {
-      return this.$route.params.userSeq;
+      return Number(this.$route.params.userSeq);
     }
   },
 }

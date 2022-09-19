@@ -1,9 +1,11 @@
 <template>
   <tr>
+    <td v-if="isCategory">{{board.categoryName}}</td>
+
     <td v-if="board.fileExist"><i class="fas fa-paperclip"></i></td>
     <td v-else></td>
     <td>
-      <RouterLink :to="`${url}/${board.boardSeq}?${search}`">
+      <RouterLink :to="`/board/${type}/${board.boardSeq}?${search}`">
         <span>{{board.title}} ({{board.commentCount}})</span>
       </RouterLink>
     </td>
@@ -18,7 +20,34 @@
 <script>
 export default {
   name: "BoardItem",
-  props:['board','url','search']
+  props: {
+    board : {
+      type: Object,
+      default: () => ({
+        boardSeq: 0,
+        dateCreated: '-',
+        dateUpdated: '-',
+        title: 'NONE',
+        visitCount: 0,
+        commentCount: 0,
+        fileExist: false,
+        userSeq: 0,
+        userId: 'NONE',
+        categoryName: 'NONE'
+      })
+    },
+    type: {
+      type: String,
+      default: ''
+    },
+    search: {
+      type: URLSearchParams,
+    },
+    isCategory: {
+      type: Boolean,
+      default: false
+    },
+  },
 }
 </script>
 

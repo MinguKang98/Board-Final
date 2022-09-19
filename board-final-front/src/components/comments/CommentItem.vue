@@ -5,7 +5,7 @@
              placeholder="댓글을 입력해 주세요."/>
       <div>
         <button class="btn btn-primary btn" @click="modifyComment">등록</button>
-        <button class="btn btn-danger btn" @click="cancleEditMode">취소</button>
+        <button class="btn btn-danger btn" @click="cancelEditMode">취소</button>
       </div>
     </div>
     <div v-else>
@@ -29,7 +29,7 @@
 
 <script>
 import {mapGetters} from "vuex";
-import {deleteComment, modifyComment, writeComment} from "@/api/comment";
+import {deleteComment, modifyComment} from "@/api/comment";
 
 export default {
   name: "CommentItem",
@@ -52,7 +52,7 @@ export default {
     changeEditMode() {
       this.editMode = true;
     },
-    cancleEditMode() {
+    cancelEditMode() {
       this.editMode = false;
       this.content = this.comment.content;
     },
@@ -63,8 +63,10 @@ export default {
           content: this.content
         }
         await modifyComment(this.comment.commentSeq, commentData);
-        this.cancleEditMode();
-        this.$emit("commentEvent", true);
+        this.cancelEditMode();
+        this.$emit("mustRefreshComments");
+
+
 
       } catch (error) {
 

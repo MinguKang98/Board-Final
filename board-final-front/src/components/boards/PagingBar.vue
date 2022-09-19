@@ -11,7 +11,7 @@
       </a>
     </li>
     <li v-for="page in pages" class="page-item">
-      <a v-if="curPage === page" v-text="page" href="#"  class="page-link active" ></a>
+      <a v-if="curPage === page" v-text="page" v-on:click="pageChange(page)"  class="page-link active" ></a>
       <a v-else v-text="page" v-on:click="pageChange(page)"  class="page-link" ></a>
     </li>
     <li v-on:click="pageChange(nextPage)" class="page-item">
