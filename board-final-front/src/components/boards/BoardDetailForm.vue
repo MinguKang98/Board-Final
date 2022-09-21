@@ -156,7 +156,7 @@ export default {
       if (result) {
         try {
           await deleteBoard(this.type, this.board.boardSeq);
-          await this.$router.push(`${this.url}?${this.search}`);
+          await this.$router.push(`/board/${this.type}?${this.search}`);
 
         } catch (error) {
 

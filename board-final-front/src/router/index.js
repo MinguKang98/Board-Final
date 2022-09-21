@@ -8,10 +8,10 @@ import NotFound from "@/views/NotFound";
 import RegisterPage from "@/views/users/RegisterPage";
 import UserModifyPage from "@/views/users/UserModifyPage";
 import UserDeletePage from "@/views/users/UserDeletePage";
-import NotifyBoardWritePage from "@/views/boards/NotifyBoardWritePage";
 import NotifyBoardModifyPage from "@/views/boards/NotifyBoardModifyPage";
 import BoardPage from "@/views/boards/BoardPage";
 import Boards from "@/views/boards/Boards";
+import BoardWritePage from "@/views/boards/BoardWritePage";
 
 Vue.use(VueRouter)
 
@@ -85,16 +85,16 @@ const routes = [
         component: BoardPage,
     },
     {
-        path: '/notify/write',
+        path: '/:type/write',
         name: 'notifyBoardWrite',
-        component: NotifyBoardWritePage,
-        beforeEnter: requireAdmin()
+        component: BoardWritePage,
+        beforeEnter: requireAuth()
     },
     {
-        path: '/board/notify/:boardSeq/modify',
+        path: '/board/:type/:boardSeq/modify',
         name: 'notifyBoardModify',
         component: NotifyBoardModifyPage,
-        beforeEnter: requireAdmin()
+        beforeEnter: requireAuth()
     },
     {
         path: '*',
