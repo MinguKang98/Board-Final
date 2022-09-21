@@ -3,7 +3,7 @@
     <td v-if="board.fileExist"><i class="fas fa-paperclip"></i></td>
     <td v-else></td>
     <td>
-      <RouterLink :to="`${url}/${board.boardSeq}`">
+      <RouterLink :to="`/board/${type}/${board.boardSeq}`">
         <span>{{board.title}} ({{board.commentCount}})</span>
       </RouterLink>
     </td>
@@ -37,7 +37,7 @@ export default {
         visitCount: 0,
       })
     },
-    url : {
+    type : {
       type: String,
       default: ''
     }

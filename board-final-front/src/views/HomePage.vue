@@ -1,9 +1,9 @@
 <template>
   <div class="container">
-    <SimpleBoard :board-type="'notify'" :call-board-list="getNotifyBoards"></SimpleBoard>
-    <SimpleBoard :board-type="'free'" :call-board-list="getFreeBoards"></SimpleBoard>
-    <SimpleBoard :board-type="'member'" :call-board-list="getMemberBoards"></SimpleBoard>
-    <SimpleBoard :board-type="'news'" :call-board-list="getNewsBoards"></SimpleBoard>
+    <SimpleBoard :type="'notify'" :call-board-list="getNotifyBoards"></SimpleBoard>
+    <SimpleBoard :type="'free'" :call-board-list="getFreeBoards"></SimpleBoard>
+    <SimpleBoard :type="'member'" :call-board-list="getMemberBoards"></SimpleBoard>
+    <SimpleBoard :type="'news'" :call-board-list="getNewsBoards"></SimpleBoard>
   </div>
 </template>
 
