@@ -48,6 +48,23 @@ export default {
       return params;
     },
   },
+  methods: {
+    typeCheck() {
+      const types = ['notify', 'free', 'member', 'news'];
+      if (types.indexOf(this.type) < 0) {
+        this.$router.push('/*');
+      }
+    },
+    boardSeqCheck() {
+      if (isNaN(this.boardSeq)) {
+        this.$router.push(`/board/${this.type}`);
+      }
+    }
+  },
+  mounted() {
+    this.typeCheck();
+    this.boardSeqCheck();
+  }
 }
 </script>
 

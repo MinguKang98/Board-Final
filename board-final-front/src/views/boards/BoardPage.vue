@@ -70,10 +70,15 @@ export default {
         this.$router.push('/login');
       }
     },
-
+    boardSeqCheck() {
+      if (isNaN(this.boardSeq)) {
+        this.$router.push(`/board/${this.type}`);
+      }
+    }
   },
   mounted() {
     this.typeCheck();
+    this.boardSeqCheck();
   }
 }
 </script>
