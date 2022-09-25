@@ -76,11 +76,6 @@ export default {
       content: '',
       files: [],
       categories: [],
-      error: {
-        categorySeq: '',
-        title: '',
-        content: ''
-      }
     }
   },
   methods: {
