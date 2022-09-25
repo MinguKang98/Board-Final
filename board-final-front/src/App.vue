@@ -1,9 +1,6 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
+    <Header></Header>
     <router-view/>
   </div>
 </template>
@@ -30,3 +27,9 @@ nav a.router-link-exact-active {
   color: #42b983;
 }
 </style>
+<script>
+import Header from "@/components/common/Header";
+export default {
+  components: {Header}
+}
+</script>
