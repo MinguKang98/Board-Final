@@ -32,7 +32,8 @@ export default {
   },
   watch: {
     userSeq() {
-        this.getUser();
+      this.userSeqCheck();
+      this.getUser();
     }
   },
   methods: {
@@ -50,6 +51,11 @@ export default {
           await this.$router.push('/*');
         }
 
+      }
+    },
+    userSeqCheck() {
+      if (isNaN(this.userSeq)) {
+        this.$router.push(`/`);
       }
     }
   },

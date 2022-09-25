@@ -17,6 +17,16 @@ export default {
       return Number(this.$route.params.userSeq);
     }
   },
+  methods: {
+    userSeqCheck() {
+      if (isNaN(this.userSeq)) {
+        this.$router.push(`/`);
+      }
+    }
+  },
+  mounted() {
+    this.userSeqCheck();
+  }
 }
 </script>
 
