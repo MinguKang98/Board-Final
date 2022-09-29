@@ -11,11 +11,11 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * JWT Token 관련 클래스
+ * JWT 생성 클래스
  */
 @Component
 @Slf4j
-public class JwtTokenProvider {
+public class JwtProvider {
 
     @Value("${jwt.secret-key}")
     private String SECRET_KEY;
