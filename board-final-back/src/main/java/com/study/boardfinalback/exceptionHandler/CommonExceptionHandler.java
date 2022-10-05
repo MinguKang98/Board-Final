@@ -2,6 +2,7 @@ package com.study.boardfinalback.exceptionHandler;
 
 import com.study.boardfinalback.dto.ErrorResponse;
 import com.study.boardfinalback.error.common.ResourceNotFoundException;
+import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -33,7 +34,7 @@ public class CommonExceptionHandler {
      */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException e) {
-        log.info(e.getMessage());
+        log.error(e.getMessage());
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.NOT_FOUND.value())
                 .message(e.getMessage())
@@ -55,7 +56,7 @@ public class CommonExceptionHandler {
         List<FieldError> fieldErrors = e.getFieldErrors();
         for (FieldError fieldError : fieldErrors) {
             errors.put(fieldError.getField(), fieldError.getDefaultMessage());
-            log.info("{} : {}", fieldError.getField(),fieldError.getDefaultMessage());
+            log.error("{} : {}", fieldError.getField(), fieldError.getDefaultMessage());
         }
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
@@ -66,22 +67,38 @@ public class CommonExceptionHandler {
     }
 
 
-
     /**
      * HttpRequestMethodNotSupportedException 처리
-     * 
+     *
      * @param e
      * @return 405 with ErrorResponse
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        log.info(e.getMessage());
+        log.error(e.getMessage());
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.METHOD_NOT_ALLOWED.value())
                 .message(e.getMessage())
                 .errors(new HashMap<>())
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    /**
+     * JwtException 처리
+     *
+     * @param e
+     * @return 400
+     */
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ErrorResponse> handleJwtException(JwtException e) {
+        log.error(e.getMessage());
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message(e.getMessage())
+                .errors(new HashMap<>())
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -92,7 +109,7 @@ public class CommonExceptionHandler {
      */
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
-        log.info(e.getMessage());
+        log.error(e.getMessage());
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .message(e.getMessage())
