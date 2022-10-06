@@ -1,6 +1,8 @@
 package com.study.boardfinalback.restcontroller;
 
 import com.study.boardfinalback.annotation.CurrentUser;
+import com.study.boardfinalback.annotation.LoginRequired;
+import com.study.boardfinalback.domain.users.UserRole;
 import com.study.boardfinalback.dto.boards.*;
 import com.study.boardfinalback.domain.*;
 import com.study.boardfinalback.domain.boards.Board;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.security.sasl.AuthenticationException;
 import javax.validation.Valid;
 import java.beans.PropertyEditorSupport;
 import java.io.IOException;
@@ -41,6 +44,7 @@ public class BoardRestController {
     private final FileService fileService;
     private final FileUtils fileUtils;
 
+
     /**
      * String type을 BoardType 으로 매핑
      *
@@ -57,22 +61,25 @@ public class BoardRestController {
     }
 
     /**
-     * 검색 조건에 해당하는 FreeBoard의 총 갯수와 FreeBoard List 담긴 BoardListDto return
+     * 검색 조건에 해당하는 Board의 총 갯수와 Board List 담긴 BoardListDto return
      *
+     * @param boardType      : 게시글 종류
      * @param searchCriteria : 검색 조건
-     * @return : BoardListDto
+     * @return : totalBoardCount and BoardWithUserAndCategoryDto List
      */
-    @GetMapping("/api/boards/free")
-    public ResponseEntity<BoardListResponse> freeBoard(SearchCriteria searchCriteria) {
+    @GetMapping("/api/boards/{type}")
+    public ResponseEntity<BoardListResponse> boardPagingList(
+            @PathVariable("type") BoardType boardType,
+            SearchCriteria searchCriteria) {
 
-        int totalBoardCount = boardService.getTotalFreeBoardCountBySearchCriteria(searchCriteria);
+        int totalBoardCount = boardService.getTotalBoardCount(boardType, searchCriteria);
         PagingCriteria pagingCriteria = PagingCriteria.builder()
                 .curPage(searchCriteria.getCurPage())
                 .totalBoardCount(totalBoardCount)
                 .build();
 
         List<BoardWithUserAndCategoryDto> boardWithUserAndCategoryDtoList = boardQueryService
-                .getFreeBoardWithUserAndCategoryDtoListBySearchPagingCriteria(searchCriteria, pagingCriteria);
+                .getBoardDtoList(boardType, searchCriteria, pagingCriteria);
 
         BoardListResponse boardListResponse = BoardListResponse.builder()
                 .totalBoardCount(totalBoardCount)
@@ -81,94 +88,25 @@ public class BoardRestController {
         return ResponseEntity.ok(boardListResponse);
     }
 
-    /**
-     * 검색 조건에 해당하는 NotifyBoard의 총 갯수와 NotifyBoard List 담긴 BoardListDto return
-     *
-     * @param searchCriteria : 검색 조건
-     * @return : BoardListDto
-     */
-    @GetMapping("/api/boards/notify")
-    public ResponseEntity<BoardListResponse> notifyBoard(SearchCriteria searchCriteria) {
-
-        int totalBoardCount = boardService.getTotalNotifyBoardCountBySearchCriteria(searchCriteria);
-        PagingCriteria pagingCriteria = PagingCriteria.builder()
-                .curPage(searchCriteria.getCurPage())
-                .totalBoardCount(totalBoardCount)
-                .build();
-
-        List<BoardWithUserAndCategoryDto> boardWithUserAndCategoryDtoList = boardQueryService
-                .getNotifyBoardWithUserAndCategoryDtoListBySearchPagingCriteria(searchCriteria, pagingCriteria);
-
-        BoardListResponse boardListResponse = BoardListResponse.builder()
-                .totalBoardCount(totalBoardCount)
-                .boardList(boardWithUserAndCategoryDtoList)
-                .build();
-        return ResponseEntity.ok(boardListResponse);
-    }
-
-    /**
-     * 검색 조건에 해당하는 MemberBoard의 총 갯수와 MemberBoard List 담긴 BoardListDto return
-     *
-     * @param searchCriteria : 검색 조건
-     * @return : BoardListDto
-     */
-    @GetMapping("/api/boards/member")
-    public ResponseEntity<BoardListResponse> memberBoard(SearchCriteria searchCriteria) {
-
-        int totalBoardCount = boardService.getTotalMemberBoardCountBySearchCriteria(searchCriteria);
-        PagingCriteria pagingCriteria = PagingCriteria.builder()
-                .curPage(searchCriteria.getCurPage())
-                .totalBoardCount(totalBoardCount)
-                .build();
-
-        List<BoardWithUserAndCategoryDto> boardWithUserAndCategoryDtoList = boardQueryService
-                .getMemberBoardWithUserAndCategoryDtoListBySearchPagingCriteria(searchCriteria, pagingCriteria);
-
-        BoardListResponse boardListResponse = BoardListResponse.builder()
-                .totalBoardCount(totalBoardCount)
-                .boardList(boardWithUserAndCategoryDtoList)
-                .build();
-        return ResponseEntity.ok(boardListResponse);
-    }
-
-    /**
-     * 검색 조건에 해당하는 NewsBoard의 총 갯수와 NewsBoard List 담긴 BoardListDto return
-     *
-     * @param searchCriteria : 검색 조건
-     * @return : BoardListDto
-     */
-    @GetMapping("/api/boards/news")
-    public ResponseEntity<BoardListResponse> newsBoard(SearchCriteria searchCriteria) {
-
-        int totalBoardCount = boardService.getTotalNewsBoardCountBySearchCriteria(searchCriteria);
-        PagingCriteria pagingCriteria = PagingCriteria.builder()
-                .curPage(searchCriteria.getCurPage())
-                .totalBoardCount(totalBoardCount)
-                .build();
-
-        List<BoardWithUserAndCategoryDto> boardWithUserAndCategoryDtoList = boardQueryService
-                .getNewsBoardWithUserAndCategoryDtoListBySearchPagingCriteria(searchCriteria, pagingCriteria);
-
-        BoardListResponse boardListResponse = BoardListResponse.builder()
-                .totalBoardCount(totalBoardCount)
-                .boardList(boardWithUserAndCategoryDtoList)
-                .build();
-        return ResponseEntity.ok(boardListResponse);
-    }
 
     /**
      * 유효성 검사 후 게시글 등록 정보를 사용하여 게시글 등록
      *
-     * @param boardType     : 게시글 종류
-     * @param currentUser   : 현재 로그인한 유저
+     * @param boardType         : 게시글 종류
+     * @param currentUser       : 현재 로그인한 유저
      * @param boardWriteRequest : 게시글 등록 정보 담긴 DTO
      * @return : void
      * @throws IOException
      */
+    @LoginRequired
     @PostMapping("/api/boards/{type}")
     public ResponseEntity write(@PathVariable("type") BoardType boardType,
                                 @CurrentUser User currentUser,
                                 @Valid BoardWriteRequest boardWriteRequest) throws IOException {
+
+        if ((boardType == BoardType.NOTIFY || boardType == BoardType.NEWS) && currentUser.getRole() != UserRole.ROLE_ADMIN) {
+            throw new AuthenticationException();
+        }
 
         Board board = Board.builder()
                 .title(boardWriteRequest.getTitle())
@@ -196,65 +134,35 @@ public class BoardRestController {
     }
 
     /**
-     * 입력받은 boardSeq을 가지는 FreeBoard return
+     * 입력받은 boardSeq 가지는 board return
      *
-     * @param boardSeq : return 할 게시글의 boardSeq
+     * @param boardType : 게시글 종류
+     * @param boardSeq  : return 할 게시글의 boardSeq
      * @return : Board
      */
-    @GetMapping("/api/boards/free/{boardSeq}")
-    public ResponseEntity<Board> freeBoardDetail(@PathVariable("boardSeq") int boardSeq) {
+    @GetMapping(value = {"/api/boards/{type}/{boardSeq}"})
+    public ResponseEntity<Board> boardDetail(@PathVariable("type") BoardType boardType,
+                                             @PathVariable("boardSeq") int boardSeq) {
 
         Board board = boardService.getBoardBySeq(boardSeq);
-        if (board.getBoardType() != BoardType.FREE) {
+        if (board.getBoardType() != boardType) {
             throw new BoardTypeNotMatchException();
         }
+
 
         return ResponseEntity.ok(board);
     }
 
+
     /**
-     * 입력받은 boardSeq을 가지는 NotifyBoard return
+     * 입력받은 boardSeq을 가지는 member board return
      *
      * @param boardSeq : return 할 게시글의 boardSeq
      * @return : Board
      */
-    @GetMapping("/api/boards/notify/{boardSeq}")
-    public ResponseEntity<Board> notifyBoardDetail(@PathVariable("boardSeq") int boardSeq) {
-
-        Board board = boardService.getBoardBySeq(boardSeq);
-        if (board.getBoardType() != BoardType.NOTIFY) {
-            throw new BoardTypeNotMatchException();
-        }
-
-        return ResponseEntity.ok(board);
-    }
-
-    /**
-     * 입력받은 boardSeq을 가지는 NewsBoard return
-     *
-     * @param boardSeq : return 할 게시글의 boardSeq
-     * @return : Board
-     */
-    @GetMapping("/api/boards/news/{boardSeq}")
-    public ResponseEntity<Board> newsBoardDetail(@PathVariable("boardSeq") int boardSeq) {
-
-        Board board = boardService.getBoardBySeq(boardSeq);
-        if (board.getBoardType() != BoardType.NEWS) {
-            throw new BoardTypeNotMatchException();
-        }
-
-        return ResponseEntity.ok(board);
-    }
-
-    /**
-     * 입력받은 boardSeq을 가지는 NewsBoard return
-     *
-     * @param boardSeq : return 할 게시글의 boardSeq
-     * @return : Board
-     */
+    @LoginRequired
     @GetMapping("/api/boards/member/{boardSeq}")
-    public ResponseEntity<Board> memberBoardDetail(@PathVariable("boardSeq") int boardSeq,
-                                                   @CurrentUser User currentUser) {
+    public ResponseEntity<Board> memberBoardDetail(@PathVariable("boardSeq") int boardSeq) {
 
         Board board = boardService.getBoardBySeq(boardSeq);
         if (board.getBoardType() != BoardType.MEMBER) {
@@ -268,13 +176,14 @@ public class BoardRestController {
     /**
      * 유효성 검사 후 게시글 수정 정보를 사용하여 게시글 수정
      *
-     * @param boardType      : 게시글 종류
-     * @param boardSeq       : 수정할 게시글의 boardSeq
-     * @param currentUser    : 현재 사용자
+     * @param boardType          : 게시글 종류
+     * @param boardSeq           : 수정할 게시글의 boardSeq
+     * @param currentUser        : 현재 사용자
      * @param boardModifyRequest : 게시글 수정 정보 담긴 DTO
      * @return : void
      * @throws IOException
      */
+    @LoginRequired
     @PutMapping("/api/boards/{type}/{boardSeq}")
     public ResponseEntity modify(@PathVariable("type") BoardType boardType,
                                  @PathVariable("boardSeq") int boardSeq,
@@ -312,6 +221,7 @@ public class BoardRestController {
      * @param currentUser : 현재 사용자
      * @return : void
      */
+    @LoginRequired
     @DeleteMapping("/api/boards/{type}/{boardSeq}")
     public ResponseEntity delete(@PathVariable("type") BoardType boardType,
                                  @PathVariable("boardSeq") int boardSeq,
@@ -329,16 +239,19 @@ public class BoardRestController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * 검색 조건에 해당하는 FreeBoard 총 갯수 return
-     *
-     * @param searchCriteria : 검색 조건
-     * @return : BoardCountDto
-     */
-    @GetMapping("/api/boards/free/count")
-    public ResponseEntity<BoardCountResponse> freeBoardCount(SearchCriteria searchCriteria) {
 
-        int totalBoardCount = boardService.getTotalFreeBoardCountBySearchCriteria(searchCriteria);
+    /**
+     * 검색 조건에 해당하는 Board 총 갯수 return
+     *
+     * @param boardType      : 게시글 종류
+     * @param searchCriteria : 검색 조건
+     * @return : total board count
+     */
+    @GetMapping("/api/boards/{type}/count")
+    public ResponseEntity<BoardCountResponse> boardCount(@PathVariable("type") BoardType boardType,
+                                                         SearchCriteria searchCriteria) {
+
+        int totalBoardCount = boardService.getTotalBoardCount(boardType, searchCriteria);
         BoardCountResponse boardCountResponse = BoardCountResponse.builder()
                 .totalBoardCount(totalBoardCount)
                 .build();
@@ -346,56 +259,6 @@ public class BoardRestController {
         return ResponseEntity.ok(boardCountResponse);
     }
 
-    /**
-     * 검색 조건에 해당하는 NotifyBoard 총 갯수 return
-     *
-     * @param searchCriteria : 검색 조건
-     * @return : BoardCountDto
-     */
-    @GetMapping("/api/boards/notify/count")
-    public ResponseEntity<BoardCountResponse> notifyBoardCount(SearchCriteria searchCriteria) {
-
-        int totalBoardCount = boardService.getTotalNotifyBoardCountBySearchCriteria(searchCriteria);
-        BoardCountResponse boardCountResponse = BoardCountResponse.builder()
-                .totalBoardCount(totalBoardCount)
-                .build();
-
-        return ResponseEntity.ok(boardCountResponse);
-    }
-
-    /**
-     * 검색 조건에 해당하는 MemberBoard 총 갯수 return
-     *
-     * @param searchCriteria : 검색 조건
-     * @return : BoardCountDto
-     */
-    @GetMapping("/api/boards/member/count")
-    public ResponseEntity<BoardCountResponse> memberBoardCount(SearchCriteria searchCriteria) {
-
-        int totalBoardCount = boardService.getTotalMemberBoardCountBySearchCriteria(searchCriteria);
-        BoardCountResponse boardCountResponse = BoardCountResponse.builder()
-                .totalBoardCount(totalBoardCount)
-                .build();
-
-        return ResponseEntity.ok(boardCountResponse);
-    }
-
-    /**
-     * 검색 조건에 해당하는 NewsBoard 총 갯수 return
-     *
-     * @param searchCriteria : 검색 조건
-     * @return : BoardCountDto
-     */
-    @GetMapping("/api/boards/news/count")
-    public ResponseEntity<BoardCountResponse> newsBoardCount(SearchCriteria searchCriteria) {
-
-        int totalBoardCount = boardService.getTotalNewsBoardCountBySearchCriteria(searchCriteria);
-        BoardCountResponse boardCountResponse = BoardCountResponse.builder()
-                .totalBoardCount(totalBoardCount)
-                .build();
-
-        return ResponseEntity.ok(boardCountResponse);
-    }
 
     /**
      * 입력받은 boardSeq을 가지는 Board의 visitCount 1 중가
