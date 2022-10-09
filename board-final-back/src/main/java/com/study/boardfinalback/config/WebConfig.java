@@ -1,6 +1,7 @@
 package com.study.boardfinalback.config;
 
 import com.study.boardfinalback.argumentresolver.CurrentUserArgumentResolver;
+import com.study.boardfinalback.interceptor.AdminInterceptor;
 import com.study.boardfinalback.interceptor.LoginInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import java.util.List;
 public class WebConfig implements WebMvcConfigurer {
 
     private final LoginInterceptor loginInterceptor;
+    private final AdminInterceptor adminInterceptor;
     private final CurrentUserArgumentResolver currentUserArgumentResolver;
 
     @Override
@@ -28,8 +30,10 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loginInterceptor)
-                .addPathPatterns("/api/boards/**");
+        registry.addInterceptor(loginInterceptor).order(1);
+        registry.addInterceptor(adminInterceptor).order(2)
+                .addPathPatterns("/api/users/**/ban",
+                        "/api/users/**/unban");
     }
 
     @Override

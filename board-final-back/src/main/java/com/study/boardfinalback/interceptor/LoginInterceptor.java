@@ -4,6 +4,7 @@ import com.study.boardfinalback.annotation.LoginRequired;
 import com.study.boardfinalback.error.users.AuthenticationException;
 import com.study.boardfinalback.jwt.JwtExtractor;
 import com.study.boardfinalback.jwt.JwtProvider;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -55,8 +56,9 @@ public class LoginInterceptor implements HandlerInterceptor {
             throw new JwtException("올바르지 않은 형식의 JWT 입니다.");
         }
 
-        int userSeq = Integer.parseInt(jwtProvider.getClaims(token).get("userSeq").toString());
-        request.setAttribute("userSeq", userSeq);
+        Claims claims = jwtProvider.getClaims(token);
+        request.setAttribute("userSeq", claims.get("userSeq"));
+        request.setAttribute("userRole", claims.get("role"));
 
         return true;
     }
