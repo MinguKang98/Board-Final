@@ -1,10 +1,7 @@
 package com.study.boardfinalback.exceptionHandler;
 
 import com.study.boardfinalback.dto.ErrorResponse;
-import com.study.boardfinalback.error.users.AuthenticationException;
-import com.study.boardfinalback.error.users.AuthorizationException;
-import com.study.boardfinalback.error.users.DuplicateUserException;
-import com.study.boardfinalback.error.users.PasswordChangeDtoValidException;
+import com.study.boardfinalback.error.users.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -31,7 +28,7 @@ public class UserExceptionHandler {
      */
     @ExceptionHandler(DuplicateUserException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateUserException(DuplicateUserException e) {
-        log.info(e.getMessage());
+        log.error(e.getMessage());
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.CONFLICT.value())
                 .message(e.getMessage())
@@ -48,7 +45,7 @@ public class UserExceptionHandler {
      */
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException e) {
-        log.info(e.getMessage());
+        log.error(e.getMessage());
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .message(e.getMessage())
@@ -65,7 +62,7 @@ public class UserExceptionHandler {
      */
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationException e) {
-        log.info(e.getMessage());
+        log.error(e.getMessage());
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.FORBIDDEN.value())
                 .message(e.getMessage())
@@ -82,11 +79,28 @@ public class UserExceptionHandler {
      */
     @ExceptionHandler(PasswordChangeDtoValidException.class)
     public ResponseEntity<ErrorResponse> handlePasswordChangeDtoValidException(PasswordChangeDtoValidException e) {
-        log.info(e.getMessage());
+        log.error(e.getMessage());
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .message(e.getMessage())
                 .errors(e.getErrors())
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * UserStatusException 처리
+     *
+     * @param e
+     * @return : 400 with ErrorResponse
+     */
+    @ExceptionHandler(UserStatusException.class)
+    public ResponseEntity<ErrorResponse> handleUserStatusException(UserStatusException e) {
+        log.error(e.getMessage());
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message(e.getMessage())
+                .errors(new HashMap<>())
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
