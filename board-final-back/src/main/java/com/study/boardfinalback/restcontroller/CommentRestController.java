@@ -1,6 +1,7 @@
 package com.study.boardfinalback.restcontroller;
 
 import com.study.boardfinalback.annotation.CurrentUser;
+import com.study.boardfinalback.annotation.LoginRequired;
 import com.study.boardfinalback.dto.comments.CommentRequest;
 import com.study.boardfinalback.dto.comments.CommentWithUserDto;
 import com.study.boardfinalback.domain.Comment;
@@ -10,6 +11,7 @@ import com.study.boardfinalback.service.comments.CommentQueryService;
 import com.study.boardfinalback.service.comments.CommentService;
 import com.study.boardfinalback.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +56,7 @@ public class CommentRestController {
      * @param currentUser    : 현재 로그인한 유저
      * @return : void
      */
+    @LoginRequired
     @PostMapping("/api/boards/{boardSeq}/comments")
     public ResponseEntity write(@PathVariable("boardSeq") int boardSeq,
                                 @Valid @RequestBody CommentRequest commentRequest,
@@ -100,6 +103,7 @@ public class CommentRestController {
      * @param currentUser    : 현재 로그인한 유저
      * @return : void
      */
+    @LoginRequired
     @PutMapping("/api/comments/{commentSeq}")
     public ResponseEntity modify(@PathVariable("commentSeq") int commentSeq,
                                  @Valid @RequestBody CommentRequest commentRequest,
@@ -126,6 +130,7 @@ public class CommentRestController {
      * @param currentUser : 현재 로그인한 유저
      * @return : void
      */
+    @LoginRequired
     @DeleteMapping("/api/comments/{commentSeq}")
     public ResponseEntity delete(@PathVariable("commentSeq") int commentSeq,
                                  @CurrentUser User currentUser) {
