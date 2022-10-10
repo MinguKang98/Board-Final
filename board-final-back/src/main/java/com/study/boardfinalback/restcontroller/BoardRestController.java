@@ -104,7 +104,7 @@ public class BoardRestController {
                                 @CurrentUser User currentUser,
                                 @Valid BoardWriteRequest boardWriteRequest) throws IOException {
 
-        if ((boardType == BoardType.NOTIFY || boardType == BoardType.NEWS) && currentUser.getRole() != UserRole.ROLE_ADMIN) {
+        if (boardType.isWritePermissionAdmin() && currentUser.getRole() != UserRole.ROLE_ADMIN) {
             throw new AuthenticationException();
         }
 
@@ -115,7 +115,7 @@ public class BoardRestController {
                 .boardType(boardType)
                 .userSeq(currentUser.getUserSeq())
                 .categorySeq(
-                        (boardType == BoardType.NOTIFY || boardType == BoardType.NEWS) ? 1 : boardWriteRequest.getCategorySeq()
+                        boardType.isWritePermissionAdmin() ? 1 : boardWriteRequest.getCategorySeq()
                 )
                 .build();
 
@@ -148,7 +148,6 @@ public class BoardRestController {
         if (board.getBoardType() != boardType) {
             throw new BoardTypeNotMatchException();
         }
-
 
         return ResponseEntity.ok(board);
     }
