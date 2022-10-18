@@ -1,17 +1,15 @@
 package com.study.boardfinalback.restcontroller;
 
 import com.study.boardfinalback.annotation.CurrentUser;
+import com.study.boardfinalback.annotation.LoginRequired;
 import com.study.boardfinalback.dto.users.*;
 import com.study.boardfinalback.domain.users.User;
 import com.study.boardfinalback.domain.users.UserRole;
 import com.study.boardfinalback.domain.users.UserStatus;
-import com.study.boardfinalback.error.users.AuthorizationException;
-import com.study.boardfinalback.error.users.DuplicateUserException;
-import com.study.boardfinalback.error.users.UserNotFoundException;
-import com.study.boardfinalback.error.users.PasswordChangeDtoValidException;
+import com.study.boardfinalback.error.users.*;
 import com.study.boardfinalback.service.UserService;
 import com.study.boardfinalback.utils.EncryptUtils;
-import com.study.boardfinalback.utils.JwtUtils;
+import com.study.boardfinalback.jwt.JwtProvider;
 import com.study.boardfinalback.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +30,7 @@ import java.util.Map;
 public class UserRestController {
 
     private final UserService userService;
+    private final JwtProvider jwtProvider;
 
     /**
      * 입력받은 로그인 정보로 로그인을 시도한다.
@@ -52,7 +51,7 @@ public class UserRestController {
             throw new AuthorizationException();
         }
 
-        String jwtToken = JwtUtils.makeJwtToken(loginUser);
+        String jwtToken = jwtProvider.makeJwtToken(loginUser);
         TokenResponse tokenResponse = TokenResponse.builder()
                 .token(jwtToken)
                 .userSeq(loginUser.getUserSeq())
@@ -124,6 +123,7 @@ public class UserRestController {
      * @param currentUser           : 현재 로그인한 유저
      * @return : void
      */
+    @LoginRequired
     @PutMapping("/api/users/{userSeq}")
     public ResponseEntity passwordChange(@PathVariable("userSeq") int userSeq,
                                          @Valid @RequestBody PasswordChangeRequest passwordChangeRequest,
@@ -160,6 +160,7 @@ public class UserRestController {
      * @param currentUser : 현재 로그인한 User
      * @return : void
      */
+    @LoginRequired
     @DeleteMapping("/api/users/{userSeq}")
     public ResponseEntity deleteUser(@PathVariable("userSeq") int userSeq,
                                      @CurrentUser User currentUser) {
@@ -206,29 +207,43 @@ public class UserRestController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * 입력받은 userSeq 을 가지는 User 를 차단한다.
+     *
+     * @param userSeq : 차단할 User의 userSeq
+     * @return : void
+     */
+    @LoginRequired
     @PutMapping("/api/users/{userSeq}/ban")
-    public ResponseEntity banUser(@PathVariable("userSeq") int userSeq,
-                                  @CurrentUser User currentUser) {
+    public ResponseEntity banUser(@PathVariable("userSeq") int userSeq) {
 
-        if (currentUser.getRole() != UserRole.ROLE_ADMIN) {
-            throw new AuthorizationException();
+        User user = userService.getUserBySeq(userSeq);
+        if (user.getStatus() == UserStatus.BANNED) {
+            throw new UserStatusException("이미 차단된 유저입니다.");
         }
 
-        userService.getUserBySeq(userSeq);
         userService.banUser(userSeq);
+        log.info("userSeq = {} 인 회원을 차단했습니다.", userSeq);
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * 입력받은 userSeq 을 가지는 User 를 차단해제한다.
+     *
+     * @param userSeq : 차단 해제할 User의 userSeq
+     * @return : void
+     */
+    @LoginRequired
     @PutMapping("/api/users/{userSeq}/unban")
-    public ResponseEntity unbanUser(@PathVariable("userSeq") int userSeq,
-                                    @CurrentUser User currentUser) {
+    public ResponseEntity unbanUser(@PathVariable("userSeq") int userSeq) {
 
-        if (currentUser.getRole() != UserRole.ROLE_ADMIN) {
-            throw new AuthorizationException();
+        User user = userService.getUserBySeq(userSeq);
+        if (user.getStatus() == UserStatus.ALLOWED) {
+            throw new UserStatusException("이미 활동중인 유저입니다.");
         }
 
-        userService.getUserBySeq(userSeq);
         userService.unbanUser(userSeq);
+        log.info("userSeq = {} 인 회원을 차단 해제했습니다.", userSeq);
         return ResponseEntity.noContent().build();
     }
 

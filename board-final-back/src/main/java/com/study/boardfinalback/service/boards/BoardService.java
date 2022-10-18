@@ -2,6 +2,7 @@ package com.study.boardfinalback.service.boards;
 
 import com.study.boardfinalback.domain.boards.Board;
 import com.study.boardfinalback.domain.File;
+import com.study.boardfinalback.domain.boards.BoardType;
 import com.study.boardfinalback.domain.criteria.PagingCriteria;
 import com.study.boardfinalback.domain.criteria.SearchCriteria;
 import com.study.boardfinalback.domain.criteria.SearchPagingCriteria;
@@ -13,6 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Board 클래스 관련 비즈니스 로직 구현 클래스
@@ -25,36 +29,77 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final FileRepository fileRepository;
 
+    private final Map<BoardType, Function<SearchCriteria, Integer>> totalBoardCountMap = Map.of(
+            BoardType.FREE, this::getTotalFreeBoardCountBySearchCriteria,
+            BoardType.NOTIFY, this::getTotalNotifyBoardCountBySearchCriteria,
+            BoardType.MEMBER, this::getTotalMemberBoardCountBySearchCriteria,
+            BoardType.NEWS, this::getTotalNewsBoardCountBySearchCriteria
+    );
+
+    private final Map<BoardType, BiFunction<SearchCriteria, PagingCriteria, List<Board>>> totalBoardListMap = Map.of(
+            BoardType.FREE, this::getFreeBoardListBySearchPagingCriteria,
+            BoardType.NOTIFY, this::getNotifyBoardListBySearchPagingCriteria,
+            BoardType.MEMBER, this::getMemberBoardListBySearchPagingCriteria,
+            BoardType.NEWS, this::getNewsBoardListBySearchPagingCriteria
+    );
+
     /**
      * 모든 Board return
      *
      * @return : 모든 Board를 가지는 List
      */
-    public List<Board> getBoardList() {
+    public List<Board> getTotalBoardList() {
 
         return boardRepository.getBoardList();
     }
 
     /**
-     * 검색 조건에 해당하는 Board(boardType: FREE) 총 갯수 return
+     * 검색 조건에 해당하는 Board 총 갯수 return
+     *
+     * @param boardType      : 게시글 종류
+     * @param searchCriteria : 검색 조건
+     * @return : 검색 조건 만족하는 Board 총 갯수
+     */
+    public int getTotalBoardCount(BoardType boardType, SearchCriteria searchCriteria) {
+
+        return totalBoardCountMap.get(boardType).apply(searchCriteria);
+    }
+
+    /**
+     * 검색 조건과 페이징 조건 만족하는 Board List return
+     *
+     * @param boardType      : 게시글 종류
+     * @param searchCriteria : 검색 조건
+     * @param pagingCriteria : 페이징 조건
+     * @return : 검색 조건과 페이징 조건 만족하는 Board를 가지는 List
+     */
+    public List<Board> getBoardList(BoardType boardType,
+                                    SearchCriteria searchCriteria,
+                                    PagingCriteria pagingCriteria) {
+
+        return totalBoardListMap.get(boardType).apply(searchCriteria, pagingCriteria);
+    }
+
+    /**
+     * 검색 조건에 해당하는 Free Board 총 갯수 return
      *
      * @param searchCriteria : 검색 조건
-     * @return : 검색 조건 만족하는 Board(boardType: FREE) 총 갯수
+     * @return : 검색 조건 만족하는 Free Board 총 갯수
      */
-    public int getTotalFreeBoardCountBySearchCriteria(SearchCriteria searchCriteria) {
+    private int getTotalFreeBoardCountBySearchCriteria(SearchCriteria searchCriteria) {
 
         return boardRepository.getTotalFreeBoardCountBySearchCriteria(searchCriteria);
     }
 
     /**
-     * 검색 조건과 페이징 조건 만족하는 Board(boardType: FREE) return
+     * 검색 조건과 페이징 조건 만족하는 Free Board return
      *
      * @param searchCriteria : 검색 조건
      * @param pagingCriteria : 페이징 조건
-     * @return : 검색 조건과 페이징 조건 만족하는 Board(boardType: FREE)들을 가지는 List
+     * @return : 검색 조건과 페이징 조건 만족하는 Free Board들을 가지는 List
      */
-    public List<Board> getFreeBoardListBySearchPagingCriteria(SearchCriteria searchCriteria,
-                                                          PagingCriteria pagingCriteria) {
+    private List<Board> getFreeBoardListBySearchPagingCriteria(SearchCriteria searchCriteria,
+                                                              PagingCriteria pagingCriteria) {
 
         SearchPagingCriteria searchPagingCriteria = SearchPagingCriteria.builder()
                 .dateCreatedFrom(searchCriteria.getDateCreatedFrom())
@@ -69,25 +114,25 @@ public class BoardService {
     }
 
     /**
-     * 검색 조건에 해당하는 Board(boardType: NOTIFY) 총 갯수 return
+     * 검색 조건에 해당하는 Notify Board 총 갯수 return
      *
      * @param searchCriteria : 검색 조건
-     * @return : 검색 조건 만족하는 Board(boardType: NOTIFY) 총 갯수
+     * @return : 검색 조건 만족하는 Notify Board 총 갯수
      */
-    public int getTotalNotifyBoardCountBySearchCriteria(SearchCriteria searchCriteria) {
+    private int getTotalNotifyBoardCountBySearchCriteria(SearchCriteria searchCriteria) {
 
         return boardRepository.getTotalNotifyBoardCountBySearchCriteria(searchCriteria);
     }
 
     /**
-     * 검색 조건과 페이징 조건 만족하는 Board(boardType: NOTIFY) return
+     * 검색 조건과 페이징 조건 만족하는 Notify Board return
      *
      * @param searchCriteria : 검색 조건
      * @param pagingCriteria : 페이징 조건
-     * @return : 검색 조건과 페이징 조건 만족하는 Board(boardType: NOTIFY)들을 가지는 List
+     * @return : 검색 조건과 페이징 조건 만족하는 Notify Board들을 가지는 List
      */
-    public List<Board> getNotifyBoardListBySearchPagingCriteria(SearchCriteria searchCriteria,
-                                                              PagingCriteria pagingCriteria) {
+    private List<Board> getNotifyBoardListBySearchPagingCriteria(SearchCriteria searchCriteria,
+                                                                PagingCriteria pagingCriteria) {
 
         SearchPagingCriteria searchPagingCriteria = SearchPagingCriteria.builder()
                 .dateCreatedFrom(searchCriteria.getDateCreatedFrom())
@@ -101,25 +146,25 @@ public class BoardService {
     }
 
     /**
-     * 검색 조건에 해당하는 Board(boardType: MEMBER) 총 갯수 return
+     * 검색 조건에 해당하는 Member Board 총 갯수 return
      *
      * @param searchCriteria : 검색 조건
-     * @return : 검색 조건 만족하는 Board(boardType: MEMBER) 총 갯수
+     * @return : 검색 조건 만족하는 Member Board 총 갯수
      */
-    public int getTotalMemberBoardCountBySearchCriteria(SearchCriteria searchCriteria) {
+    private int getTotalMemberBoardCountBySearchCriteria(SearchCriteria searchCriteria) {
 
         return boardRepository.getTotalMemberBoardCountBySearchCriteria(searchCriteria);
     }
 
     /**
-     * 검색 조건과 페이징 조건 만족하는 Board(boardType: MEMBER) return
+     * 검색 조건과 페이징 조건 만족하는 Member Board return
      *
      * @param searchCriteria : 검색 조건
      * @param pagingCriteria : 페이징 조건
-     * @return : 검색 조건과 페이징 조건 만족하는 Board(boardType: MEMBER)들을 가지는 List
+     * @return : 검색 조건과 페이징 조건 만족하는 Member Board들을 가지는 List
      */
-    public List<Board> getMemberBoardListBySearchPagingCriteria(SearchCriteria searchCriteria,
-                                                              PagingCriteria pagingCriteria) {
+    private List<Board> getMemberBoardListBySearchPagingCriteria(SearchCriteria searchCriteria,
+                                                                PagingCriteria pagingCriteria) {
 
         SearchPagingCriteria searchPagingCriteria = SearchPagingCriteria.builder()
                 .dateCreatedFrom(searchCriteria.getDateCreatedFrom())
@@ -134,24 +179,24 @@ public class BoardService {
     }
 
     /**
-     * 검색 조건에 해당하는 Board(boardType: NEWS) 총 갯수 return
+     * 검색 조건에 해당하는 News Board 총 갯수 return
      *
      * @param searchCriteria : 검색 조건
-     * @return : 검색 조건 만족하는 Board(boardType: NEWS) 총 갯수
+     * @return : 검색 조건 만족하는 News Board 총 갯수
      */
-    public int getTotalNewsBoardCountBySearchCriteria(SearchCriteria searchCriteria) {
+    private int getTotalNewsBoardCountBySearchCriteria(SearchCriteria searchCriteria) {
 
         return boardRepository.getTotalNewsBoardCountBySearchCriteria(searchCriteria);
     }
 
     /**
-     * 검색 조건과 페이징 조건 만족하는 Board(boardType: NEWS) return
+     * 검색 조건과 페이징 조건 만족하는 News Board return
      *
      * @param searchCriteria : 검색 조건
      * @param pagingCriteria : 페이징 조건
-     * @return : 검색 조건과 페이징 조건 만족하는 Board(boardType: NEWS)들을 가지는 List
+     * @return : 검색 조건과 페이징 조건 만족하는 News Board들을 가지는 List
      */
-    public List<Board> getNewsBoardListBySearchPagingCriteria(SearchCriteria searchCriteria,
+    private List<Board> getNewsBoardListBySearchPagingCriteria(SearchCriteria searchCriteria,
                                                               PagingCriteria pagingCriteria) {
 
         SearchPagingCriteria searchPagingCriteria = SearchPagingCriteria.builder()
@@ -180,7 +225,7 @@ public class BoardService {
     /**
      * 입력받은 Board와 File을 추가한다
      *
-     * @param board : 추가할 Board의 인스턴스
+     * @param board    : 추가할 Board의 인스턴스
      * @param fileList : 추가할 File들의 List
      * @return : 추가한 Board의 boardSeq
      */
@@ -200,8 +245,8 @@ public class BoardService {
     /**
      * 입력받은 Board를 수정하고, File들을 추가, 삭제한다.
      *
-     * @param inputBoard : 변경할 필드를 가지는 Board
-     * @param addFileList : 추가할 File List
+     * @param inputBoard     : 변경할 필드를 가지는 Board
+     * @param addFileList    : 추가할 File List
      * @param deleteFileList : 삭제할 File List
      */
     @Transactional
@@ -254,7 +299,7 @@ public class BoardService {
 
     /**
      * 입력받은 boardSeq 가지는 Board의 visitCount 1 증가
-     * 
+     *
      * @param boardSeq :  update할 Board의 boardSeq
      */
     @Transactional

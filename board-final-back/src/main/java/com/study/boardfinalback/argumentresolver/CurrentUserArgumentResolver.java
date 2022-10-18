@@ -2,10 +2,7 @@ package com.study.boardfinalback.argumentresolver;
 
 import com.study.boardfinalback.annotation.CurrentUser;
 import com.study.boardfinalback.domain.users.User;
-import com.study.boardfinalback.error.users.AuthenticationException;
 import com.study.boardfinalback.service.UserService;
-import com.study.boardfinalback.utils.JwtUtils;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
@@ -36,6 +33,7 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
         return hasLoginAnnotation && hasUserType;
     }
 
+
     @Override
     public Object resolveArgument(MethodParameter parameter,
                                   ModelAndViewContainer mavContainer,
@@ -43,17 +41,9 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
                                   WebDataBinderFactory binderFactory) throws Exception {
 
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader == null) {
-            throw new AuthenticationException();
-        }
+        int currentUserSeq = Integer.parseInt(request.getAttribute("userSeq").toString());
 
-        String token = authHeader.substring(7);
-        Claims claims = JwtUtils.getClaims(token);
-        int loginUserSeq = Integer.parseInt(claims.get("userSeq").toString());
-        User user = userService.getUserBySeq(loginUserSeq);
-
-        return user;
+        return userService.getUserBySeq(currentUserSeq);
     }
 
 }
