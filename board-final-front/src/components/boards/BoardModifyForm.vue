@@ -260,12 +260,12 @@ export default {
       this.addFileList.push(e.target.files[0]);
     },
     validCheck() {
-      if (this.title.length < 3 || this.title.length > 100) {
+      if (this.title !== undefined && (this.title.length < 3 || this.title.length > 100)) {
         alert("제목은 3글자 이상 100글자 이하여야 합니다.")
         return false;
       }
 
-      if (this.content.length < 3 || this.content.length > 2000) {
+      if (this.content !== undefined && (this.content.length < 3 || this.content.length > 2000)) {
         alert("내용은 3글자 이상 2000글자 이하여야 합니다.");
         return false;
       }
