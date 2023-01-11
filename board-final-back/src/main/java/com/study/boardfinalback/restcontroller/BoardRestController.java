@@ -11,6 +11,7 @@ import com.study.boardfinalback.domain.criteria.PagingCriteria;
 import com.study.boardfinalback.domain.criteria.SearchCriteria;
 import com.study.boardfinalback.domain.users.User;
 import com.study.boardfinalback.error.boards.BoardTypeNotMatchException;
+import com.study.boardfinalback.error.users.AuthorizationException;
 import com.study.boardfinalback.service.boards.BoardQueryService;
 import com.study.boardfinalback.service.boards.BoardService;
 import com.study.boardfinalback.service.FileService;
@@ -23,7 +24,6 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.security.sasl.AuthenticationException;
 import javax.validation.Valid;
 import java.beans.PropertyEditorSupport;
 import java.io.IOException;
@@ -105,7 +105,7 @@ public class BoardRestController {
                                 @Valid BoardWriteRequest boardWriteRequest) throws IOException {
 
         if (boardType.isWritePermissionAdmin() && currentUser.getRole() != UserRole.ROLE_ADMIN) {
-            throw new AuthenticationException();
+            throw new AuthorizationException();
         }
 
         Board board = Board.builder()
