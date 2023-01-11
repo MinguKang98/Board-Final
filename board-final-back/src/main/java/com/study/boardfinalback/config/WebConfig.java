@@ -22,8 +22,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
+        registry.addMapping("/api/**")
                 .allowedOrigins("http://localhost:8080")
+//                .allowedOrigins("http://localhost") // 배포 시 실제 ip 일력
                 .allowedMethods("*")
                 .exposedHeaders("Location");
     }
